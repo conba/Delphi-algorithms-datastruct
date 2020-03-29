@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2020/03/24 22:37:45.000.815,=C:\Users\27592\Documents\RAD Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2020/03/24 22:48:16.000.913,=C:\Users\27592\Documents\RAD Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2020/03/28 22:15:32.000.770,=C:\Users\27592\Documents\RAD Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2020/03/28 22:15:55.000.977,C:\Users\27592\Documents\RAD Studio\Projects\Unit1.dfm=C:\Users\27592\Documents\RAD Studio\Projects\Main.dfm</Transaction>
+    <Transaction>2020/03/28 22:15:55.000.977,C:\Users\27592\Documents\RAD Studio\Projects\Unit1.pas=C:\Users\27592\Documents\RAD Studio\Projects\Main.pas</Transaction>
+    <Transaction>2020/03/28 22:16:13.000.893,C:\Users\27592\Documents\RAD Studio\Projects\Project1.dproj=C:\Users\27592\Documents\RAD Studio\Projects\TtdRecordList.dproj</Transaction>
+    <Transaction>2020/03/28 22:16:37.000.363,C:\Users\27592\Documents\RAD Studio\Projects\Main.dfm=C:\Users\27592\Desktop\Delphi-algorithms-datastruct\CHAP02\TtdRecordList\Main.dfm</Transaction>
+    <Transaction>2020/03/28 22:16:37.000.363,C:\Users\27592\Documents\RAD Studio\Projects\Main.pas=C:\Users\27592\Desktop\Delphi-algorithms-datastruct\CHAP02\TtdRecordList\Main.pas</Transaction>
+    <Transaction>2020/03/28 22:16:40.000.453,C:\Users\27592\Documents\RAD Studio\Projects\TtdRecordList.dproj=C:\Users\27592\Desktop\Delphi-algorithms-datastruct\CHAP02\TtdRecordList\TtdRecordList.dproj</Transaction>
+    <Transaction>2020/03/28 22:16:59.000.613,=C:\Users\27592\Desktop\Delphi-algorithms-datastruct\CHAP02\TtdRecordList\TDBasics.pas</Transaction>
+    <Transaction>2020/03/28 22:16:59.000.644,=C:\Users\27592\Desktop\Delphi-algorithms-datastruct\CHAP02\TtdRecordList\TDRecLst.pas</Transaction>
+  </Transactions>
+</BorlandProject>
