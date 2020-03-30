@@ -72,3 +72,19 @@ AddressOfElemetN := AddressOfArray + ((N - X) * sizeof(ElementType));
 
 * 创建数组类
   1. 根据需求来分配元素，甚至可以扩展或者缩小数组的大小。
+
+### 数组类设计
+
+```pascal
+// 1. Create构造函数要保留元素大小，并对元素大小进行计算，出于速度考虑，将元素的大小设计为4字节的倍数。注意在delphi1中堆分配的空间最大为64KB, 所以要考虑不能超过该大小。
+// 关于64KB的考虑：可能是因为Delphi1中Integer类型是16位的，在以后的版本中Integer类型是32为的。内存是以字节为单位存储的。所以Delphi1中堆可以分配2的16次方也就是65536个字节，而在以后的版本中可以分配2的32次方个字节。
+
+constructor Create(aElementSize: Integer);
+begin
+  FActElemSize := aElementSize;
+  FElementSize := (aElementSize)
+end;
+```
+
+
+

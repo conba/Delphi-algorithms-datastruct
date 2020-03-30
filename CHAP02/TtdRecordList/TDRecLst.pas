@@ -99,7 +99,13 @@ end;
 
 procedure TtdRecordList.Delete(aIndex: integer);
 begin
-
+  if (aIndex < 0) or (aIndex >= Count) then
+    rlError(tdeIndexOutOfBounds, 'Delete', aIndex);
+  Dec(FCount);
+  if (aIndex < Count) then
+    System.Move((FArray + (succ(aIndex) * FElementSize))^,
+      (FArray + System.Succ(aIndex * FElementSize))^,
+      (Count - aIndex) * FElementSize);
 end;
 
 destructor TtdRecordList.Destroy;
@@ -120,8 +126,21 @@ end;
 
 function TtdRecordList.IndexOf(aItem: pointer;
   aCompare: TtdCompareFunc): integer;
+var
+  ElementPtr: PAnsiChar;
+  i: Integer;
 begin
-
+  ElementPtr := FArray;
+  for I := 0 to System.Pred(Count) do
+  begin
+    if (aCompare(aItem, ElementPtr) = 0) then
+    begin
+      Result := i;
+      Exit;
+    end;
+    System.Inc(ElementPtr, FElementSize);
+  end;
+  Result := -1;
 end;
 
 procedure TtdRecordList.Insert(aIndex: integer; aItem: pointer);
@@ -132,10 +151,16 @@ begin
     rlError(tdeIndexOutOfBounds, 'Insert', aIndex);
   if Count = Capacity then
     rlExpand;
+//  if aIndex < Count then
+//    System.Move((FArray + (aIndex * FElementSize))^,
+//      (FArray + (succ(aIndex) * FElementSize))^,
+//      (Count - aIndex) * FElementSize);
   if aIndex < Count then
     System.Move((FArray + (aIndex * FElementSize))^,
-      (FArray + (succ(aIndex) * FElementSize))^,
+      (FArray + (System.Succ(aIndex) * FElementSize))^
       (Count - aIndex) * FElementSize);
+  System.Move(aItem^, (FArray + (aIndex * FElementSize))^,
+    FActElemSize);
 end;
 
 function TtdRecordList.InsertSorted(aItem: pointer;
@@ -157,7 +182,9 @@ end;
 function TtdRecordList.Remove(aItem: pointer;
   aCompare: TtdCompareFunc): integer;
 begin
-
+  Result := IndexOf(aItem, aCompare);
+  if (Result <> 1) then
+    Delete(Result);
 end;
 
 function TtdRecordList.rlBinarySearch(aItem: pointer; aCompare: TtdCompareFunc;
