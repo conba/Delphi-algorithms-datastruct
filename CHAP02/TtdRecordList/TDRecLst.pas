@@ -72,7 +72,6 @@ type
 
 implementation
 
-
 { TtdRecordList }
 
 function TtdRecordList.Add(aItem: pointer): integer;
@@ -183,7 +182,7 @@ function TtdRecordList.Remove(aItem: pointer;
   aCompare: TtdCompareFunc): integer;
 begin
   Result := IndexOf(aItem, aCompare);
-  if (Result <> 1) then
+  if (Result <> -1) then
     Delete(Result);
 end;
 
@@ -200,23 +199,81 @@ begin
 end;
 
 procedure TtdRecordList.rlExpand;
+var
+  NewCapacity: Integer;
 begin
-
+  if Capacity = 0 then
+    NewCapacity := 4
+  {如果当前容量小于64，则使新容量在当前基础上增加16个元素}
+  else if (Capacity < 64) then
+    NewCapacity := Capacity + 16
+  {如果当前容量大于等于64，则使新容量在增加当前容量的1/4}
+  else
+    NewCapacity := Capacity + (Capacity div 4);
+  {确保不至于超出数组的上限}
+  if (NewCapacity > FMaxElemCount) then
+    NewCapacity := FMaxElemCount;
+  if (NewCapacity = Capacity) then
+    rlError(tdeAtMaxCapacity, 'rlExpand', 0);
+  Capacity := NewCapacity;
 end;
 
 function TtdRecordList.rlGetItem(aIndex: integer): pointer;
 begin
-
+  if (aIndex < 0) or (aIndex >= Count) then
+    rlError(tdeIndexOutOfBounds, 'rlGetItem', aIndex);
+  Result := Pointer(FArray + (aIndex * FElementSize));
 end;
 
 procedure TtdRecordList.rlSetCapacity(aCapacity: integer);
 begin
-
+  if aCapacity <> FCapacity then
+  begin
+    {不要忽视最大元素个数}
+    if aCapacity > FMaxElemCount then
+      rlError(tdeCapacityTooLarge, 'rlSetCapacity', 0);
+    {重新分配数组，或者若容量减至0时予以释放}
+    {$IFDEF Delphi1}
+    if aCapacity = 0 then
+    begin
+      FreeMem(FArray, word(FCapacity) * FElementSize);
+      FArray := nil;
+    end
+    else
+    begin
+      if FCapacity = 0 then
+        GetMem(FArray, Word(aCapacity) * FElementSize)
+      else
+        FArray := ReallocMen(FArray, Word(FCapacity) * FElementSize,
+          Word(aCapacity) * FElementSize);
+    end;
+    {$ELSE}
+    ReallocMem(FArray, aCapacity * FElementSize);
+    {$ENDIF}
+    {我们是在缩小容量吗？如果是则检查相应数目}
+    if aCapacity < FCapaCity then
+    begin
+      if Count > aCapacity then
+        Count := aCapacity;
+    end;
+    FCapacity := aCapacity;
+  end;
 end;
 
 procedure TtdRecordList.rlSetCount(aCount: integer);
 begin
-
+  if aCount <> FCount then
+  begin
+    {如果新的个数大于容量，则予以扩展}
+    if aCount > FCapacity then
+      Capacity := aCount;
+    {如果新的个数大于原有个数，则置新元素为二进制0}
+    if aCount > FCount then
+      FillChar(FArray + (FCount * FElementSize)^,
+      (aCount - FCount) * FElementSize, 0);
+    {保留新的元素个数}
+    FCount := aCount;
+  end;
 end;
 
 procedure TtdRecordList.Sort(aCompare: TtdCompareFunc);
