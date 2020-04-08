@@ -78,11 +78,11 @@ type
     gnData : record end;
   end;
 
-{===TtdNodeManager===================================================}
+
 constructor TtdNodeManager.Create(aNodeSize : cardinal);
 begin
   inherited Create;
-  {save the node size rounded to nearest 4 bytes}
+  {将字节大小取整为最接近的4字节倍数并保存}
   if (aNodeSize <= sizeof(pointer)) then
     aNodeSize := sizeof(pointer)
   else
@@ -92,6 +92,8 @@ begin
   {calculate the page size (default 1024 bytes) and the number of
    nodes per page; if the default page size is not large enough for
    two or more nodes, force a single node per page}
+  {计算页面大小(默认为1024字节)以及每页上的节点数； 如果每个页面不足以容纳2个或者
+   更多节点，则每个页面只存放一个节点}
   FNodesPerPage := (PageSize - sizeof(pointer)) div aNodeSize;
   if (FNodesPerPage > 1) then
     FPageSize := 1024
@@ -101,7 +103,7 @@ begin
   end;
   {$ENDIF}
 end;
-{--------}
+
 destructor TtdNodeManager.Destroy;
 {$IFNDEF UseHeap}
 var
@@ -110,6 +112,7 @@ var
 begin
   {$IFNDEF UseHeap}
   {dispose of all the pages, if there are any}
+  {如果存在页面，则全部释放}
   while (FPageHead <> nil) do begin
     Temp := PGenericNode(FPageHead)^.gnNext;
     FreeMem(FPageHead, FPageSize);
@@ -118,7 +121,7 @@ begin
   {$ENDIF}
   inherited Destroy;
 end;
-{--------}
+
 function TtdNodeManager.AllocNode : pointer;
 begin
   {$IFDEF UseHeap}
@@ -126,14 +129,16 @@ begin
   {$ELSE}
   {if the free list is empty, allocate a new page; this'll fill the
    free list}
+  {如果空闲列表为空，分配一个新的页面；它将填入空闲列表}
   if (FFreeList = nil) then
     nmAllocNewPage;
   {return the top of the free list}
+  {返回空闲列表的顶部节点}
   Result := FFreeList;
   FFreeList := PGenericNode(FFreeList)^.gnNext;
   {$ENDIF}
 end;
-{--------}
+
 function TtdNodeManager.AllocNodeClear : pointer;
 begin
   {$IFDEF UseHeap}
@@ -149,13 +154,14 @@ begin
   {$ENDIF}
   FillChar(Result^, FNodeSize, 0);
 end;
-{--------}
+
 procedure TtdNodeManager.FreeNode(aNode : pointer);
 begin
   {$IFDEF UseHeap}
   FreeMem(aNode, FNodeSize);
   {$ELSE}
   {add the node (if non-nil) to the top of the free list}
+  {将节点(如果非空)加到空闲列表顶部}
   if (aNode <> nil) then begin
     {$IFDEF DebugMode}
     nmValidateNode(aNode);
@@ -165,7 +171,7 @@ begin
   end;
   {$ENDIF}
 end;
-{--------}
+
 {$IFNDEF UseHeap}
 procedure TtdNodeManager.nmAllocNewPage;
 var
@@ -173,12 +179,15 @@ var
   i       : integer;
 begin
   {allocate a new page and add it to the front of the page list}
+  {分配一个新的页面，并将他加到页面列表最前面}
   GetMem(NewPage, FPageSize);
   PGenericNode(NewPage)^.gnNext := FPageHead;
   FPageHead := NewPage;
   {now split up the new page into nodes and push them all onto the
    free list; note that the first 4 bytes of the page is a pointer to
    the next page, so remember to skip over them}
+  {现在将新页面划分为节点，并把所有节点均压入到空闲列表中；注意页面的前四个字节
+   为指向下一个页面的指针，因此一定要跳过这4个字节}
   inc(NewPage, sizeof(pointer));
   for i := pred(FNodesPerPage) downto 0 do begin
     FreeNode(NewPage);
@@ -186,7 +195,7 @@ begin
   end;
 end;
 {$ENDIF}
-{--------}
+
 {$IFDEF DebugMode}
 procedure TtdNodeManager.nmError(aErrorCode  : integer;
                            const aMethodName : TtdNameString);
@@ -198,7 +207,7 @@ begin
                 [UnitName, ClassName, aMethodName, Name]));
 end;
 {$ENDIF}
-{--------}
+
 {$IFDEF DebugMode}
 procedure TtdNodeManager.nmValidateNode(aNode : pointer);
 var
@@ -214,7 +223,6 @@ begin
   nmError(tdeInvalidNode, 'FreeNode');
 end;
 {$ENDIF}
-{====================================================================}
 
 end.
 
