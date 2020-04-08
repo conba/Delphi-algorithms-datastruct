@@ -93,7 +93,7 @@ begin
    nodes per page; if the default page size is not large enough for
    two or more nodes, force a single node per page}
   {计算页面大小(默认为1024字节)以及每页上的节点数； 如果每个页面不足以容纳2个或者
-   更多节点，则每个页面只存放一个节点}
+   更多节点，则每个页面只存放一个节点且页面大小等于节点大小+指针大小}
   FNodesPerPage := (PageSize - sizeof(pointer)) div aNodeSize;
   if (FNodesPerPage > 1) then
     FPageSize := 1024
