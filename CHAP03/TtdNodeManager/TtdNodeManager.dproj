@@ -1,0 +1,595 @@
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+		<PropertyGroup>
+			<ProjectGuid>{1A793270-507C-4157-9829-298E5B0436CD}</ProjectGuid>
+			<MainSource>TtdNodeManager.dpr</MainSource>
+			<ProjectVersion>12.3</ProjectVersion>
+			<Base>True</Base>
+			<Config Condition="'$(Config)'==''">Debug</Config>
+			<Platform>Win32</Platform>
+			<AppType>Application</AppType>
+			<FrameworkType>VCL</FrameworkType>
+			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_1)'!=''">
+			<Cfg_1>true</Cfg_1>
+			<CfgParent>Base</CfgParent>
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_2)'!=''">
+			<Cfg_2>true</Cfg_2>
+			<CfgParent>Base</CfgParent>
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Base)'!=''">
+			<DCC_ImageBase>00400000</DCC_ImageBase>
+			<DCC_DcuOutput>.\$(Config)\$(Platform)</DCC_DcuOutput>
+			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
+			<DCC_ExeOutput>.\$(Config)\$(Platform)</DCC_ExeOutput>
+			<DCC_E>false</DCC_E>
+			<DCC_N>false</DCC_N>
+			<DCC_S>false</DCC_S>
+			<DCC_F>false</DCC_F>
+			<DCC_K>false</DCC_K>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_1)'!=''">
+			<DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
+			<DCC_Optimize>false</DCC_Optimize>
+			<DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_2)'!=''">
+			<DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
+			<DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
+			<DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+			<DCC_DebugInformation>false</DCC_DebugInformation>
+		</PropertyGroup>
+		<ItemGroup>
+			<DelphiCompile Include="TtdNodeManager.dpr">
+				<MainSource>MainSource</MainSource>
+			</DelphiCompile>
+			<DCCReference Include="Main.pas">
+				<Form>Form13</Form>
+			</DCCReference>
+			<BuildConfiguration Include="Release">
+				<Key>Cfg_2</Key>
+				<CfgParent>Base</CfgParent>
+			</BuildConfiguration>
+			<BuildConfiguration Include="Base">
+				<Key>Base</Key>
+			</BuildConfiguration>
+			<BuildConfiguration Include="Debug">
+				<Key>Cfg_1</Key>
+				<CfgParent>Base</CfgParent>
+			</BuildConfiguration>
+		</ItemGroup>
+		<Import Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')" Project="$(BDS)\Bin\CodeGear.Delphi.Targets"/>
+		<Import Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')" Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj"/>
+		<ProjectExtensions>
+			<Borland.Personality>Delphi.Personality.12</Borland.Personality>
+			<Borland.ProjectType/>
+			<BorlandProject>
+				<Delphi.Personality>
+					<VersionInfo>
+						<VersionInfo Name="IncludeVerInfo">False</VersionInfo>
+						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
+						<VersionInfo Name="MajorVer">1</VersionInfo>
+						<VersionInfo Name="MinorVer">0</VersionInfo>
+						<VersionInfo Name="Release">0</VersionInfo>
+						<VersionInfo Name="Build">0</VersionInfo>
+						<VersionInfo Name="Debug">False</VersionInfo>
+						<VersionInfo Name="PreRelease">False</VersionInfo>
+						<VersionInfo Name="Special">False</VersionInfo>
+						<VersionInfo Name="Private">False</VersionInfo>
+						<VersionInfo Name="DLL">False</VersionInfo>
+						<VersionInfo Name="Locale">2052</VersionInfo>
+						<VersionInfo Name="CodePage">936</VersionInfo>
+					</VersionInfo>
+					<VersionInfoKeys>
+						<VersionInfoKeys Name="CompanyName"/>
+						<VersionInfoKeys Name="FileDescription"/>
+						<VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="InternalName"/>
+						<VersionInfoKeys Name="LegalCopyright"/>
+						<VersionInfoKeys Name="LegalTrademarks"/>
+						<VersionInfoKeys Name="OriginalFilename"/>
+						<VersionInfoKeys Name="ProductName"/>
+						<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="Comments"/>
+					</VersionInfoKeys>
+					<Source>
+						<Source Name="MainSource">TtdNodeManager.dpr</Source>
+					</Source>
+				</Delphi.Personality>
+				<Platforms>
+					<Platform value="Win32">True</Platform>
+				</Platforms>
+			</BorlandProject>
+			<ProjectFileVersion>12</ProjectFileVersion>
+		</ProjectExtensions>
+	</Project>
+
+<!-- EurekaLog First Line
+[Exception Log]
+EurekaLog Version=6104
+Activate=1
+Activate Handle=1
+Save Log File=1
+Foreground Tab=0
+Freeze Activate=0
+Freeze Timeout=10
+SMTP From=
+SMTP Host=
+SMTP Port=25
+SMTP UserID=support
+SMTP Password=support
+Append to Log=0
+TerminateBtn Operation=1
+Errors Number=8
+Errors Terminate=0
+Email Address=
+Email Object=????????
+Email Send Options=0
+Output Path=
+Encrypt Password=
+AutoCloseDialogSecs=0
+WebSendMode=1
+SupportULR=http://debug.pinming.cn/DebugUpload.aspx
+HTMLLayout Count=15
+HTMLLine0="%U003Chtml%U003E"
+HTMLLine1="  %U003Chead%U003E"
+HTMLLine2="  %U003C/head%U003E"
+HTMLLine3="  %U003Cbody TopMargin=10 LeftMargin=10%U003E"
+HTMLLine4="    %U003Ctable width="100%%" border="0"%U003E"
+HTMLLine5="      %U003Ctr%U003E"
+HTMLLine6="        %U003Ctd nowrap%U003E"
+HTMLLine7="          %U003Cfont face="????" size="2"%U003E"
+HTMLLine8="            %U003C%%HTML_TAG%%%U003E"
+HTMLLine9="          %U003C/font%U003E"
+HTMLLine10="        %U003C/td%U003E"
+HTMLLine11="      %U003C/tr%U003E"
+HTMLLine12="    %U003C/table%U003E"
+HTMLLine13="  %U003C/body%U003E"
+HTMLLine14="%U003C/html%U003E"
+AutoCrashOperation=1
+AutoCrashNumber=10
+AutoCrashMinutes=1
+WebURL=http://www.pinming.cn
+WebUserID=
+WebPassword=
+WebPort=80
+AttachedFiles=
+ProxyURL=
+ProxyUser=
+ProxyPassword=
+ProxyPort=8080
+TrakerUser=
+TrakerPassword=
+TrakerAssignTo=
+TrakerProject=
+TrakerCategory=
+TrakerTrialID=
+ZipPassword=
+PreBuildEvent=
+PostSuccessfulBuildEvent=
+PostFailureBuildEvent=
+ExceptionDialogType=2
+Count=0
+EMail Message Line Count=1
+Line0="????????????"
+loNoDuplicateErrors=0
+loAppendReproduceText=0
+loDeleteLogAtVersionChange=0
+loAddComputerNameInLogFileName=0
+loSaveModulesAndProcessesSections=1
+loSaveAssemblerAndCPUSections=1
+soAppStartDate=1
+soAppName=1
+soAppVersionNumber=1
+soAppParameters=1
+soAppCompilationDate=1
+soAppUpTime=1
+soExcDate=1
+soExcAddress=1
+soExcModuleName=1
+soExcModuleVersion=1
+soExcType=1
+soExcMessage=1
+soExcID=1
+soExcCount=1
+soExcStatus=1
+soExcNote=1
+soUserID=1
+soUserName=1
+soUserEmail=1
+soUserPrivileges=0
+soUserCompany=1
+soActCtlsFormClass=1
+soActCtlsFormText=1
+soActCtlsControlClass=1
+soActCtlsControlText=1
+soCmpName=1
+soCmpTotalMemory=1
+soCmpFreeMemory=1
+soCmpTotalDisk=1
+soCmpFreeDisk=1
+soCmpSysUpTime=1
+soCmpProcessor=1
+soCmpDisplayMode=1
+soCmpDisplayDPI=1
+soCmpVideoCard=1
+soCmpPrinter=1
+soOSType=1
+soOSBuildN=1
+soOSUpdate=1
+soOSLanguage=1
+soOSCharset=1
+soNetIP=1
+soNetSubmask=1
+soNetGateway=1
+soNetDNS1=1
+soNetDNS2=1
+soNetDHCP=1
+soCustomData=1
+sndShowSendDialog=1
+sndShowSuccessFailureMsg=0
+sndSendEntireLog=0
+sndSendXMLLogCopy=0
+sndSendScreenshot=1
+sndUseOnlyActiveWindow=0
+sndSendLastHTMLPage=1
+sndSendInSeparatedThread=0
+sndAddDateInFileName=0
+sndAddComputerNameInFileName=0
+edoSendErrorReportChecked=1
+edoAttachScreenshotChecked=1
+edoShowCopyToClipOption=1
+edoShowDetailsButton=1
+edoShowInDetailedMode=0
+edoShowInTopMostMode=0
+edoUseEurekaLogLookAndFeel=0
+edoShowSendErrorReportOption=1
+edoShowAttachScreenshotOption=1
+edoShowCustomButton=0
+csoShowDLLs=1
+csoShowBPLs=1
+csoShowBorlandThreads=1
+csoShowWindowsThreads=1
+csoDoNotStoreProcNames=0
+boPauseBorlandThreads=0
+boDoNotPauseMainThread=0
+boPauseWindowsThreads=0
+boUseMainModuleOptions=1
+boCopyLogInCaseOfError=0
+boSaveCompressedCopyInCaseOfError=0
+boHandleSafeCallExceptions=0
+boCallRTLExceptionEvent=0
+boCatchHandledExceptions=0
+loCatchLeaks=0
+loGroupsSonLeaks=1
+loHideBorlandLeaks=1
+loFreeAllLeaks=1
+loCatchLeaksExceptions=1
+cfoReduceFileSize=1
+cfoCheckFileCorruption=0
+cfoUseEL7=0
+Count mtInformationMsgCaption=1
+mtInformationMsgCaption0="????."
+Count mtQuestionMsgCaption=1
+mtQuestionMsgCaption0="????"
+Count mtErrorMsgCaption=1
+mtErrorMsgCaption0="????."
+Count mtDialog_Caption=1
+mtDialog_Caption0="????"
+Count mtDialog_ErrorMsgCaption=1
+mtDialog_ErrorMsgCaption0="??????????????????????????????????????????"
+Count mtDialog_GeneralCaption=1
+mtDialog_GeneralCaption0="????"
+Count mtDialog_GeneralHeader=1
+mtDialog_GeneralHeader0="????????"
+Count mtDialog_CallStackCaption=1
+mtDialog_CallStackCaption0="????"
+Count mtDialog_CallStackHeader=1
+mtDialog_CallStackHeader0="????????"
+Count mtDialog_ModulesCaption=1
+mtDialog_ModulesCaption0="????"
+Count mtDialog_ModulesHeader=1
+mtDialog_ModulesHeader0="????????"
+Count mtDialog_ProcessesCaption=1
+mtDialog_ProcessesCaption0="????"
+Count mtDialog_ProcessesHeader=1
+mtDialog_ProcessesHeader0="????????"
+Count mtDialog_AsmCaption=1
+mtDialog_AsmCaption0="????"
+Count mtDialog_AsmHeader=1
+mtDialog_AsmHeader0="????????"
+Count mtDialog_CPUCaption=1
+mtDialog_CPUCaption0="CPU"
+Count mtDialog_CPUHeader=1
+mtDialog_CPUHeader0="CPU ????"
+Count mtDialog_OKButtonCaption=1
+mtDialog_OKButtonCaption0="????(%U0026O)"
+Count mtDialog_TerminateButtonCaption=1
+mtDialog_TerminateButtonCaption0="????(%U0026T)"
+Count mtDialog_RestartButtonCaption=1
+mtDialog_RestartButtonCaption0="????????(%U0026R)"
+Count mtDialog_DetailsButtonCaption=1
+mtDialog_DetailsButtonCaption0="????(%U0026D)"
+Count mtDialog_CustomButtonCaption=1
+mtDialog_CustomButtonCaption0="????(%U0026H)"
+Count mtDialog_SendMessage=1
+mtDialog_SendMessage0="????????(%U0026S)"
+Count mtDialog_ScreenshotMessage=1
+mtDialog_ScreenshotMessage0="????????????(%U0026A)"
+Count mtDialog_CopyMessage=1
+mtDialog_CopyMessage0="????????????(%U0026C)"
+Count mtDialog_SupportMessage=1
+mtDialog_SupportMessage0="??????????????????"
+Count mtMSDialog_ErrorMsgCaption=1
+mtMSDialog_ErrorMsgCaption0="????????????????????????????????????????????????????"
+Count mtMSDialog_RestartCaption=1
+mtMSDialog_RestartCaption0="????????????????."
+Count mtMSDialog_TerminateCaption=1
+mtMSDialog_TerminateCaption0="????????????."
+Count mtMSDialog_PleaseCaption=1
+mtMSDialog_PleaseCaption0="????????????????????????."
+Count mtMSDialog_DescriptionCaption=1
+mtMSDialog_DescriptionCaption0="????????????????????????????????????????????????????????????????????????"
+Count mtMSDialog_SeeDetailsCaption=1
+mtMSDialog_SeeDetailsCaption0="??????????????????????????"
+Count mtMSDialog_SeeClickCaption=1
+mtMSDialog_SeeClickCaption0="??????????????."
+Count mtMSDialog_HowToReproduceCaption=1
+mtMSDialog_HowToReproduceCaption0="?????????????????????????? (??????)?"
+Count mtMSDialog_EmailCaption=1
+mtMSDialog_EmailCaption0="???????? (??????):"
+Count mtMSDialog_SendButtonCaption=1
+mtMSDialog_SendButtonCaption0="????????????(%U0026S)"
+Count mtMSDialog_NoSendButtonCaption=1
+mtMSDialog_NoSendButtonCaption0="??????(%U0026D)"
+Count mtLog_AppHeader=1
+mtLog_AppHeader0="????????"
+Count mtLog_AppStartDate=1
+mtLog_AppStartDate0="????????"
+Count mtLog_AppName=1
+mtLog_AppName0="????/????"
+Count mtLog_AppVersionNumber=1
+mtLog_AppVersionNumber0="??????"
+Count mtLog_AppParameters=1
+mtLog_AppParameters0="????"
+Count mtLog_AppCompilationDate=1
+mtLog_AppCompilationDate0="????????"
+Count mtLog_AppUpTime=1
+mtLog_AppUpTime0="????????"
+Count mtLog_ExcHeader=1
+mtLog_ExcHeader0="????"
+Count mtLog_ExcDate=1
+mtLog_ExcDate0="????"
+Count mtLog_ExcAddress=1
+mtLog_ExcAddress0="????"
+Count mtLog_ExcModuleName=1
+mtLog_ExcModuleName0="????"
+Count mtLog_ExcModuleVersion=1
+mtLog_ExcModuleVersion0="????"
+Count mtLog_ExcType=1
+mtLog_ExcType0="????"
+Count mtLog_ExcMessage=1
+mtLog_ExcMessage0="????"
+Count mtLog_ExcID=1
+mtLog_ExcID0="????"
+Count mtLog_ExcCount=1
+mtLog_ExcCount0="????"
+Count mtLog_ExcStatus=1
+mtLog_ExcStatus0="????"
+Count mtLog_ExcNote=1
+mtLog_ExcNote0="????"
+Count mtLog_UserHeader=1
+mtLog_UserHeader0="????"
+Count mtLog_UserID=1
+mtLog_UserID0="????"
+Count mtLog_UserName=1
+mtLog_UserName0="????"
+Count mtLog_UserEmail=1
+mtLog_UserEmail0="????"
+Count mtLog_UserCompany=1
+mtLog_UserCompany0="????"
+Count mtLog_UserPrivileges=1
+mtLog_UserPrivileges0="????"
+Count mtLog_ActCtrlsHeader=1
+mtLog_ActCtrlsHeader0="????"
+Count mtLog_ActCtrlsFormClass=1
+mtLog_ActCtrlsFormClass0="????????"
+Count mtLog_ActCtrlsFormText=1
+mtLog_ActCtrlsFormText0="????????"
+Count mtLog_ActCtrlsControlClass=1
+mtLog_ActCtrlsControlClass0="????????"
+Count mtLog_ActCtrlsControlText=1
+mtLog_ActCtrlsControlText0="????????"
+Count mtLog_CmpHeader=1
+mtLog_CmpHeader0="??????"
+Count mtLog_CmpName=1
+mtLog_CmpName0="????"
+Count mtLog_CmpTotalMemory=1
+mtLog_CmpTotalMemory0="????????"
+Count mtLog_CmpFreeMemory=1
+mtLog_CmpFreeMemory0="????????"
+Count mtLog_CmpTotalDisk=1
+mtLog_CmpTotalDisk0="????????"
+Count mtLog_CmpFreeDisk=1
+mtLog_CmpFreeDisk0="????????"
+Count mtLog_CmpSystemUpTime=1
+mtLog_CmpSystemUpTime0="????????????"
+Count mtLog_CmpProcessor=1
+mtLog_CmpProcessor0="??????"
+Count mtLog_CmpDisplayMode=1
+mtLog_CmpDisplayMode0="????????"
+Count mtLog_CmpDisplayDPI=1
+mtLog_CmpDisplayDPI0="??????????"
+Count mtLog_CmpVideoCard=1
+mtLog_CmpVideoCard0="??????"
+Count mtLog_CmpPrinter=1
+mtLog_CmpPrinter0="??????"
+Count mtLog_OSHeader=1
+mtLog_OSHeader0="????????"
+Count mtLog_OSType=1
+mtLog_OSType0="????"
+Count mtLog_OSBuildN=1
+mtLog_OSBuildN0="??????"
+Count mtLog_OSUpdate=1
+mtLog_OSUpdate0="????"
+Count mtLog_OSLanguage=1
+mtLog_OSLanguage0="????"
+Count mtLog_OSCharset=1
+mtLog_OSCharset0="??????"
+Count mtLog_NetHeader=1
+mtLog_NetHeader0="????"
+Count mtLog_NetIP=1
+mtLog_NetIP0="IP ????"
+Count mtLog_NetSubmask=1
+mtLog_NetSubmask0="????????"
+Count mtLog_NetGateway=1
+mtLog_NetGateway0="????"
+Count mtLog_NetDNS1=1
+mtLog_NetDNS10="DNS 1"
+Count mtLog_NetDNS2=1
+mtLog_NetDNS20="DNS 2"
+Count mtLog_NetDHCP=1
+mtLog_NetDHCP0="DHCP"
+Count mtLog_CustInfoHeader=1
+mtLog_CustInfoHeader0="??????????"
+Count mtCallStack_Address=1
+mtCallStack_Address0="????"
+Count mtCallStack_Name=1
+mtCallStack_Name0="????"
+Count mtCallStack_Unit=1
+mtCallStack_Unit0="????"
+Count mtCallStack_Class=1
+mtCallStack_Class0="????"
+Count mtCallStack_Procedure=1
+mtCallStack_Procedure0="????/????"
+Count mtCallStack_Line=1
+mtCallStack_Line0="????"
+Count mtCallStack_MainThread=1
+mtCallStack_MainThread0="??????"
+Count mtCallStack_ExceptionThread=1
+mtCallStack_ExceptionThread0="????????"
+Count mtCallStack_RunningThread=1
+mtCallStack_RunningThread0="????????"
+Count mtCallStack_CallingThread=1
+mtCallStack_CallingThread0="????????"
+Count mtCallStack_ThreadID=1
+mtCallStack_ThreadID0="????????"
+Count mtCallStack_ThreadPriority=1
+mtCallStack_ThreadPriority0="??????????"
+Count mtCallStack_ThreadClass=1
+mtCallStack_ThreadClass0="??????"
+Count mtCallStack_LeakCaption=1
+mtCallStack_LeakCaption0="????????"
+Count mtCallStack_LeakData=1
+mtCallStack_LeakData0="????"
+Count mtCallStack_LeakType=1
+mtCallStack_LeakType0="????"
+Count mtCallStack_LeakSize=1
+mtCallStack_LeakSize0="????"
+Count mtCallStack_LeakCount=1
+mtCallStack_LeakCount0="????"
+Count mtSendDialog_Caption=1
+mtSendDialog_Caption0="????????"
+Count mtSendDialog_Message=1
+mtSendDialog_Message0="????"
+Count mtSendDialog_Resolving=1
+mtSendDialog_Resolving0="????????????..."
+Count mtSendDialog_Login=1
+mtSendDialog_Login0="????????..."
+Count mtSendDialog_Connecting=1
+mtSendDialog_Connecting0="??????????????????..."
+Count mtSendDialog_Connected=1
+mtSendDialog_Connected0="????????????????????"
+Count mtSendDialog_Sending=1
+mtSendDialog_Sending0="????????????..."
+Count mtSendDialog_Sent=1
+mtSendDialog_Sent0="????????????"
+Count mtSendDialog_SelectProject=1
+mtSendDialog_SelectProject0="????????..."
+Count mtSendDialog_Searching=1
+mtSendDialog_Searching0="????????..."
+Count mtSendDialog_Modifying=1
+mtSendDialog_Modifying0="????????..."
+Count mtSendDialog_Disconnecting=1
+mtSendDialog_Disconnecting0="????????????..."
+Count mtSendDialog_Disconnected=1
+mtSendDialog_Disconnected0="??????????????"
+Count mtReproduceDialog_Caption=1
+mtReproduceDialog_Caption0="????"
+Count mtReproduceDialog_Request=1
+mtReproduceDialog_Request0="????????????????????:"
+Count mtReproduceDialog_OKButtonCaption=1
+mtReproduceDialog_OKButtonCaption0="????(%U0026O)"
+Count mtModules_Handle=1
+mtModules_Handle0="????"
+Count mtModules_Name=1
+mtModules_Name0="????"
+Count mtModules_Description=1
+mtModules_Description0="????"
+Count mtModules_Version=1
+mtModules_Version0="????"
+Count mtModules_Size=1
+mtModules_Size0="????"
+Count mtModules_LastModified=1
+mtModules_LastModified0="????????"
+Count mtModules_Path=1
+mtModules_Path0="????"
+Count mtProcesses_ID=1
+mtProcesses_ID0="????"
+Count mtProcesses_Name=1
+mtProcesses_Name0="????"
+Count mtProcesses_Description=1
+mtProcesses_Description0="????"
+Count mtProcesses_Version=1
+mtProcesses_Version0="????"
+Count mtProcesses_Memory=1
+mtProcesses_Memory0="????"
+Count mtProcesses_Priority=1
+mtProcesses_Priority0="??????"
+Count mtProcesses_Threads=1
+mtProcesses_Threads0="????"
+Count mtProcesses_Path=1
+mtProcesses_Path0="????"
+Count mtCPU_Registers=1
+mtCPU_Registers0="??????"
+Count mtCPU_Stack=1
+mtCPU_Stack0="????"
+Count mtCPU_MemoryDump=1
+mtCPU_MemoryDump0="??????"
+Count mtSend_SuccessMsg=1
+mtSend_SuccessMsg0="????????????"
+Count mtSend_FailureMsg=1
+mtSend_FailureMsg0="????????????????????"
+Count mtSend_BugClosedMsg=1
+mtSend_BugClosedMsg0="??????????????????????????????????????????????????"
+Count mtSend_UnknownErrorMsg=1
+mtSend_UnknownErrorMsg0="??????????"
+Count mtSend_InvalidLoginMsg=1
+mtSend_InvalidLoginMsg0="??????????????"
+Count mtSend_InvalidSearchMsg=1
+mtSend_InvalidSearchMsg0="??????????????"
+Count mtSend_InvalidSelectionMsg=1
+mtSend_InvalidSelectionMsg0="??????????????"
+Count mtSend_InvalidInsertMsg=1
+mtSend_InvalidInsertMsg0="????????????"
+Count mtSend_InvalidModifyMsg=1
+mtSend_InvalidModifyMsg0="????????????"
+Count mtFileCrackedMsg=2
+mtFileCrackedMsg0="????????????????"
+mtFileCrackedMsg1="????????????????"
+Count mtException_LeakMultiFree=1
+mtException_LeakMultiFree0="????????????????"
+Count mtException_LeakMemoryOverrun=1
+mtException_LeakMemoryOverrun0="????????????"
+Count mtException_AntiFreeze=1
+mtException_AntiFreeze0="????????????????????."
+Count mtInvalidEmailMsg=1
+mtInvalidEmailMsg0="??????????"
+TextsCollection=
+EurekaLog Last Line -->
