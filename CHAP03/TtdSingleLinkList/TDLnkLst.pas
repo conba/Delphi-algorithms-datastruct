@@ -219,7 +219,7 @@ begin
   MoveBeforeFirst;
   FIsSorted := true;
 end;
-{--------}
+
 destructor TtdSingleLinkList.Destroy;
 begin
   {delete all the nodes, including the head node}
@@ -462,19 +462,22 @@ begin
    the list is sorted or not; if sorted, we perform a binary search,
    if not, we perform a sequential search}
   {if sorted, do a binary search}
-  if IsSorted then begin
+  if IsSorted then
+  begin
     {prepare}
     BLCursor := FHead;
     BLCursorIx := -1;
     ListCount := Count;
     {while there are still nodes to check...}
-    while (ListCount <> 0) do begin
+    while (ListCount <> 0) do
+    begin
       {calculate the midpoint; it will be at least 1}
       MidPoint := (ListCount + 1) div 2;
       {move that many nodes along}
       WorkCursor := BLCursor;
       WorkCursorIx := BLCursorIx;
-      for i := 1 to MidPoint do begin
+      for i := 1 to MidPoint do
+      begin
         WorkParent := WorkCursor;
         WorkCursor := WorkCursor^.slnNext;
         inc(WorkCursorIx);
@@ -483,18 +486,21 @@ begin
       CompareResult := aCompare(WorkCursor^.slnData, aItem);
       {if the node's data is less than the item, shrink the list, and
        try again from where we're at}
-      if (CompareResult < 0) then begin
+      if (CompareResult < 0) then
+      begin
         dec(ListCount, MidPoint);
         BLCursor := WorkCursor;
         BLCursorIx := WorkCursorIx;
       end
       {if the node's data is greater than the item, shrink the list,
        and try again}
-      else if (CompareResult > 0) then begin
+      else if (CompareResult > 0) then
+      begin
         ListCount := MidPoint - 1;
       end
       {otherwise we found it; set the real cursor}
-      else begin
+      else
+      begin
         FCursor := WorkCursor;
         {NOTE: the 32-bit Delphis flag the following line with
          "Variable 'WorkParent' might not have been initialized."
@@ -514,14 +520,17 @@ begin
     FCursorIx := succ(BLCursorIx);
   end
   {otherwise do a sequential search}
-  else begin
+  else
+  begin
     {set the work cursor to the first node (if it exists)}
     WorkParent := FHead;
     WorkCursor := WorkParent^.slnNext;
     WorkCursorIx := 0;
     {walk the linked list looking for the item}
-    while (WorkCursor <> nil) do begin
-      if (aCompare(WorkCursor^.slnData, aItem) = 0) then begin
+    while (WorkCursor <> nil) do
+    begin
+      if (aCompare(WorkCursor^.slnData, aItem) = 0) then
+      begin
         {we found it; set the result; set the real cursor}
         Result := WorkCursorIx;
         FCursor := WorkCursor;
@@ -611,13 +620,16 @@ begin
   Node1 := aPriorNode1^.slnNext;
   Node2 := aPriorNode2^.slnNext;
   {repeat until one of the lists empties}
-  while (aCount1 <> 0) and (aCount2 <> 0) do begin
-    if (aCompare(Node1^.slnData, Node2^.slnData) <= 0) then begin
+  while (aCount1 <> 0) and (aCount2 <> 0) do
+  begin
+    if (aCompare(Node1^.slnData, Node2^.slnData) <= 0) then
+    begin
       LastNode := Node1;
       Node1 := Node1^.slnNext;
       dec(aCount1);
     end
-    else begin
+    else
+    begin
       Temp := Node2^.slnNext;
       Node2^.slnNext := Node1;
       LastNode^.slnNext := Node2;
@@ -629,7 +641,8 @@ begin
   {if it was the first list that emptied, link the last node up to the
    remaining part of the second list, and walk it to get the very last
    node}
-  if (aCount1 = 0) then begin
+  if (aCount1 = 0) then
+  begin
     LastNode^.slnNext := Node2;
     for i := 0 to pred(aCount2) do
       LastNode := LastNode^.slnNext;
@@ -637,7 +650,8 @@ begin
   {if it was the second list that emptied, Node2 is the first node of
    the remaining list; walk the remaining part of the first list and
    link it up to Node2}
-  else begin
+  else
+  begin
     for i := 0 to pred(aCount1) do
       LastNode := LastNode^.slnNext;
     LastNode^.slnNext := Node2;
@@ -659,7 +673,8 @@ var
 begin
   {easy case first: if there is only one item in the sublist, it must
    be sorted, so return}
-  if (aCount = 1) then begin
+  if (aCount = 1) then
+  begin
     Result := aPriorNode^.slnNext;
     Exit;
   end;
@@ -693,20 +708,23 @@ begin
   {--now use local variables for speed--}
   {if the index wanted is before the cursor's index, move work cursor
    before all of the nodes}
-  if (aIndex < FCursorIx) then begin
+  if (aIndex < FCursorIx) then
+  begin
     WorkCursor := FHead;
     WorkParent := nil;
     WorkCursorIx := -1;
   end
   {otherwise set work cursor to current cursor}
-  else begin
+  else
+  begin
     WorkCursor := FCursor;
     WorkParent := FParent;
     WorkCursorIx := FCursorIx;
   end;
   {while the work cursor index is less than the index required,
    advance the work cursor}
-  while (WorkCursorIx < aIndex) do begin
+  while (WorkCursorIx < aIndex) do
+  begin
     WorkParent := WorkCursor;
     WorkCursor := WorkCursor^.slnNext;
     inc(WorkCursorIx);
@@ -792,7 +810,8 @@ begin
   {delete all the nodes, except the head and tail nodes; if we can
    dispose of nodes, do so}
   Temp := FHead^.dlnNext;
-  while (Temp <> FTail) do begin
+  while (Temp <> FTail) do
+  begin
     FHead^.dlnNext := Temp^.dlnNext;
     if Assigned(FDispose) then
       FDispose(Temp^.dlnData);
@@ -884,13 +903,16 @@ begin
   Node1 := aPriorNode1^.dlnNext;
   Node2 := aPriorNode2^.dlnNext;
   {repeat until one of the lists empties}
-  while (aCount1 <> 0) and (aCount2 <> 0) do begin
-    if (aCompare(Node1^.dlnData, Node2^.dlnData) <= 0) then begin
+  while (aCount1 <> 0) and (aCount2 <> 0) do
+  begin
+    if (aCompare(Node1^.dlnData, Node2^.dlnData) <= 0) then
+    begin
       LastNode := Node1;
       Node1 := Node1^.dlnNext;
       dec(aCount1);
     end
-    else begin
+    else
+    begin
       Temp := Node2^.dlnNext;
       Node2^.dlnNext := Node1;
       LastNode^.dlnNext := Node2;
@@ -932,7 +954,8 @@ var
 begin
   {easy case first: if there is only one item in the sublist, it must
    be sorted, so return}
-  if (aCount = 1) then begin
+  if (aCount = 1) then
+  begin
     Result := aPriorNode^.dlnNext;
     Exit;
   end;
@@ -968,14 +991,16 @@ begin
   {the desired index is either before the current cursor or after it;
    in either case the required index is either closer to the cursor or
    closer to the relevant end; work out the shortest route}
-  if (aIndex < WorkCursorIx) then begin
+  if (aIndex < WorkCursorIx) then
+  begin
     if ((aIndex - 0) < (WorkCursorIx - aIndex)) then begin
       {start at front and work forwards towards aIndex}
       WorkCursor := FHead;
       WorkCursorIx := -1;
     end;
   end
-  else {aIndex > FCursorIx} begin
+  else {aIndex > FCursorIx}
+  begin
     if ((aIndex - WorkCursorIx) < (Count - aIndex)) then begin
       {start at end and work back towards aIndex}
       WorkCursor := FTail;
@@ -984,13 +1009,15 @@ begin
   end;
   {while the work cursor index is less than the index required,
    advance the work cursor}
-  while (WorkCursorIx < aIndex) do begin
+  while (WorkCursorIx < aIndex) do
+  begin
     WorkCursor := WorkCursor^.dlnNext;
     inc(WorkCursorIx);
   end;
   {while the work cursor index is greater than the index required,
    move the work cursor backwards}
-  while (WorkCursorIx > aIndex) do begin
+  while (WorkCursorIx > aIndex) do
+  begin
     WorkCursor := WorkCursor^.dlnPrior;
     dec(WorkCursorIx);
   end;
@@ -1037,8 +1064,10 @@ begin
   WorkCursor := FHead^.dlnNext;
   WorkCursorIx := 0;
   {walk the linked list looking for the item}
-  while (WorkCursor <> FTail) do begin
-    if (WorkCursor^.dlnData = aItem) then begin
+  while (WorkCursor <> FTail) do
+  begin
+    if (WorkCursor^.dlnData = aItem) then
+    begin
       {we found it; set the result; set the real cursor}
       Result := WorkCursorIx;
       FCursor := WorkCursor;
@@ -1130,7 +1159,8 @@ begin
    the list is sorted or not; if sorted, we perform a binary search,
    if not, we perform a sequential search}
   {if sorted, do a binary search}
-  if IsSorted then begin
+  if IsSorted then
+  begin
     {prepare}
     BLCursor := FHead;
     BLCursorIx := -1;
@@ -1174,13 +1204,16 @@ begin
     FCursorIx := succ(BLCursorIx);
   end
   {otherwise do a sequential search}
-  else begin
+  else
+  begin
     {set the work cursor to the first node (if it exists)}
     WorkCursor := FHead^.dlnNext;
     WorkCursorIx := 0;
     {walk the linked list looking for the item}
-    while (WorkCursor <> nil) do begin
-      if (aCompare(WorkCursor^.dlnData, aItem) = 0) then begin
+    while (WorkCursor <> nil) do
+    begin
+      if (aCompare(WorkCursor^.dlnData, aItem) = 0) then
+      begin
         {we found it; set the result; set the real cursor}
         Result := WorkCursorIx;
         FCursor := WorkCursor;
@@ -1213,7 +1246,8 @@ end;
 procedure TtdDoubleLinkList.MoveNext;
 begin
   {advance the cursor to its own next pointer}
-  if (FCursor <> FTail) then begin
+  if (FCursor <> FTail) then
+  begin
     FCursor := FCursor^.dlnNext;
     inc(FCursorIx);
   end;
@@ -1222,7 +1256,8 @@ end;
 procedure TtdDoubleLinkList.MovePrior;
 begin
   {move the cursor back to its own previous pointer}
-  if (FCursor <> FHead) then begin
+  if (FCursor <> FHead) then
+  begin
     FCursor := FCursor^.dlnPrior;
     dec(FCursorIx);
   end;
@@ -1242,14 +1277,16 @@ var
   TempParent   : PdlNode;
 begin
   {if there are zero (or one) items the list is already sorted}
-  if (Count <= 1) then begin
+  if (Count <= 1) then
+  begin
     FIsSorted := true;
     Exit;
   end;
   {perform an insertion sort from the second item onwards}
   WalkerParent := FHead^.dlnNext;
   Walker := WalkerParent^.dlnNext;
-  while (Walker <> FTail) do begin
+  while (Walker <> FTail) do
+  begin
     {find where the walker item should be in the sorted list to its
      left - we walk the sorted sublist making a note of the parent as
      we go so that we can insert properly. Note that the loop below
@@ -1257,18 +1294,21 @@ begin
      won't run off the end of the list}
     TempParent := FHead;
     Temp := TempParent^.dlnNext;
-    while (aCompare(Temp^.dlnData, Walker^.dlnData) < 0) do begin
+    while (aCompare(Temp^.dlnData, Walker^.dlnData) < 0) do
+    begin
       TempParent := Temp;
       Temp := TempParent^.dlnNext;
     end;
     {did we find the walker node? If so, move the walker's parent on
      by one link}
-    if (Temp = Walker) then begin
+    if (Temp = Walker) then
+    begin
       WalkerParent := Walker;
     end
     {otherwise, move the walker node into the correct place in the
      sorted sublist}
-    else begin
+    else
+    begin
       {disconnect the walker node}
       WalkerParent^.dlnNext := Walker^.dlnNext;
       {connect the walker node in the correct place}
@@ -1281,7 +1321,8 @@ begin
   {now patch up all of the previous links}
   WalkerParent := FHead;
   Walker := WalkerParent^.dlnNext;
-  while (WalkerParent <> FTail) do begin
+  while (WalkerParent <> FTail) do
+  begin
     Walker^.dlnPrior := WalkerParent;
     WalkerParent := Walker;
     Walker := WalkerParent^.dlnNext;
@@ -1296,7 +1337,8 @@ var
 begin
   {perform a singly linked mergesort if there are more than one item
    in the list; then patch up the prior links}
-  if (Count > 1) then begin
+  if (Count > 1) then
+  begin
     dllMergesort(aCompare, FHead, Count);
     Dad := FHead;
     Walker := FHead^.dlnNext;
@@ -1317,7 +1359,8 @@ function TDSLLSearch(aList : TtdSingleLinkList;
                      aItem : pointer;
                      aCompare : TtdCompareFunc) : boolean;
 begin
-  with aList do begin
+  with aList do
+  begin
     MoveBeforeFirst;
     MoveNext;
     while not IsAfterLast do begin
@@ -1337,7 +1380,8 @@ function TDSLLSortedSearch(aList : TtdSingleLinkList;
 var
   Compare : integer;
 begin
-  with aList do begin
+  with aList do
+  begin
     MoveBeforeFirst;
     MoveNext;
     while not IsAfterLast do begin
@@ -1356,7 +1400,8 @@ function TDDLLSearch(aList : TtdSingleLinkList;
                      aItem : pointer;
                      aCompare : TtdCompareFunc) : boolean;
 begin
-  with aList do begin
+  with aList do
+  begin
     MoveBeforeFirst;
     MoveNext;
     while not IsAfterLast do begin
@@ -1376,7 +1421,8 @@ function TDDLLSortedSearch(aList : TtdSingleLinkList;
 var
   Compare : integer;
 begin
-  with aList do begin
+  with aList do
+  begin
     MoveBeforeFirst;
     MoveNext;
     while not IsAfterLast do begin

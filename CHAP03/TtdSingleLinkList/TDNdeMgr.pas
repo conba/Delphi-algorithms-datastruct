@@ -113,7 +113,8 @@ begin
   {$IFNDEF UseHeap}
   {dispose of all the pages, if there are any}
   {如果存在页面，则全部释放}
-  while (FPageHead <> nil) do begin
+  while (FPageHead <> nil) do
+  begin
     Temp := PGenericNode(FPageHead)^.gnNext;
     FreeMem(FPageHead, FPageSize);
     FPageHead := Temp;
@@ -189,7 +190,8 @@ begin
   {现在将新页面划分为节点，并把所有节点均压入到空闲列表中；注意页面的前四个字节
    为指向下一个页面的指针，因此一定要跳过这4个字节}
   inc(NewPage, sizeof(pointer));
-  for i := pred(FNodesPerPage) downto 0 do begin
+  for i := pred(FNodesPerPage) downto 0 do
+  begin
     FreeNode(NewPage);
     inc(NewPage, FNodeSize);
   end;
@@ -215,7 +217,8 @@ var
 begin
   {validate aNode to be on a page}
   Page := FPageHead;
-  while (Page <> nil) do begin
+  while (Page <> nil) do
+  begin
     if (Page < aNode) and (aNode < Page+FPageSize) then
       Exit;
     Page := PAnsiChar(PGenericNode(Page)^.gnNext);
