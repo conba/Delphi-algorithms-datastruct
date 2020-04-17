@@ -46,16 +46,16 @@ type
   TtdSingleLinkList = class
     private
       FCount   : longint;
-      FCursor  : PslNode;
-      FCursorIx: longint;
+      FCursor  : PslNode;  // 游标
+      FCursorIx: longint;  // 游标的索引地址
       FDispose : TtdDisposeProc;
       FHead    : PslNode;
       FIsSorted: boolean;
       FName    : TtdNameString;
-      FParent  : PslNode;
+      FParent  : PslNode;      // 很重要，实现了插入操作的统一
     protected
-      function sllGetItem(aIndex : longint) : pointer;
-      procedure sllSetItem(aIndex : longint; aItem  : pointer);
+      function sllGetItem(aIndex : longint) : pointer;   // 获得某个索引的数据
+      procedure sllSetItem(aIndex : longint; aItem  : pointer);   // 设置某个索引的数据
 
       procedure sllError(aErrorCode  : integer;
                    const aMethodName : TtdNameString);
@@ -67,6 +67,7 @@ type
       function sllMergesort(aCompare   : TtdCompareFunc;
                             aPriorNode : PslNode;
                             aCount     : longint) : PslNode;
+      // 定位游标
       procedure sllPositionAtNth(aIndex : longint);
     public
       constructor Create(aDispose : TtdDisposeProc);
@@ -74,12 +75,12 @@ type
 
       function Add(aItem : pointer) : longint;
       procedure Clear;
-      procedure Delete(aIndex : longint);
+      procedure Delete(aIndex : longint);    // 删除某个节点的数据
       procedure DeleteAtCursor;
       function Examine : pointer;
-      function First : pointer;
-      function IndexOf(aItem : pointer) : longint;
-      procedure Insert(aIndex : longint; aItem : pointer);
+      function First : pointer; // 获得第一个节点数据
+      function IndexOf(aItem : pointer) : longint;  // 获得该内容的索引
+      procedure Insert(aIndex : longint; aItem : pointer);   // 在某个节点插入数据
       procedure InsertAtCursor(aItem : pointer);
       procedure InsertSorted(aItem : pointer;
                              aCompare : TtdCompareFunc);
@@ -208,14 +209,17 @@ constructor TtdSingleLinkList.Create(aDispose : TtdDisposeProc);
 begin
   inherited Create;
   {save the dispose procedure}
+  {保存释放过程}
   FDispose := aDispose;
   {get the node manager}
+  {获得节点管理器}
   sllGetNodeManager;
   {allocate a head node}
   FHead := PslNode(SLNodeManager.AllocNode);
   FHead^.slnNext := nil;
   FHead^.slnData := nil;
   {set the cursor}
+  {设置游标}
   MoveBeforeFirst;
   FIsSorted := true;
 end;
@@ -238,7 +242,8 @@ begin
   WorkCursor := FCursor;
   WorkParent := FParent;
   {move to the very end of the linked list}
-  while (WorkCursor <> nil) do begin
+  while (WorkCursor <> nil) do
+  begin
     WorkParent := WorkCursor;
     WorkCursor := WorkCursor^.slnNext;
   end;
@@ -258,12 +263,14 @@ var
 begin
   {delete all the nodes, except the head node; if we can dispose of
    data, do so}
+  {删除除了头结点以外的所有节点，如果我们可以删除数据，则做此工作}
   Temp := FHead^.slnNext;
-  while (Temp <> nil) do begin
+  while (Temp <> nil) do
+  begin
     FHead^.slnNext := Temp^.slnNext;
     if Assigned(FDispose) then
       FDispose(Temp^.slnData);
-    SLNodeManager.FreeNode(Temp);
+    SLNodeManager.FreeNode(Temp);  // 将节点放回给空闲列表
     Temp := FHead^.slnNext;
   end;
   FCount := 0;
@@ -274,8 +281,10 @@ end;
 procedure TtdSingleLinkList.Delete(aIndex : longint);
 begin
   {position the cursor}
+  {定位游标}
   sllPositionAtNth(aIndex);
   {delete the item at the cursor}
+  {删除节点}
   DeleteAtCursor;
 end;
 
@@ -284,9 +293,11 @@ begin
   if (FCursor = nil) or (FCursor = FHead) then
     sllError(tdeListCannotDelete, 'Delete');
   {dispose of its contents}
+  {释放节点其内容}
   if Assigned(FDispose) then
     FDispose(FCursor^.slnData);
   {unlink the node and free it}
+  {断开链接并释放节点}
   FParent^.slnNext := FCursor^.slnNext;
   SLNodeManager.FreeNode(FCursor);
   FCursor := FParent^.slnNext;
@@ -300,6 +311,7 @@ begin
   if (FCursor = nil) or (FCursor = FHead) then
     sllError(tdeListCannotExamine, 'Examine');
   {return the data part of the cursor}
+  {返回游标数据}
   Result := FCursor^.slnData;
 end;
 
@@ -322,8 +334,10 @@ begin
   WorkCursor := WorkParent^.slnNext;
   WorkCursorIx := 0;
   {walk the linked list looking for the item}
-  while (WorkCursor <> nil) do begin
-    if (WorkCursor^.slnData = aItem) then begin
+  while (WorkCursor <> nil) do
+  begin
+    if (WorkCursor^.slnData = aItem) then
+    begin
       {we found it; set the result; set the real cursor}
       Result := WorkCursorIx;
       FCursor := WorkCursor;
@@ -355,10 +369,11 @@ var
 begin
   {make sure we aren't trying to insert at the before first position;
    if we're there, move on one position}
+  {确保我们不是在头结点插入，如果是的话，那么将游标向后移动一位}
   if (FCursor = FHead) then
     MoveNext;
   {allocate a new node and insert at the cursor}
-  NewNode := PslNode(SLNodeManager.AllocNode);
+  NewNode := PslNode(SLNodeManager.AllocNode);  // 使用节点管理器来分配节点
   NewNode^.slnData := aItem;
   NewNode^.slnNext := FCursor;
   FParent^.slnNext := NewNode;
@@ -374,14 +389,16 @@ var
   TempParent   : PslNode;
 begin
   {if there are zero (or one) items the list is already sorted}
-  if (Count <= 1) then begin
+  if (Count <= 1) then
+  begin
     FIsSorted := true;
     Exit;
   end;
   {perform an insertion sort from the second item onwards}
   WalkerParent := FHead^.slnNext;
   Walker := WalkerParent^.slnNext;
-  while (Walker <> nil) do begin
+  while (Walker <> nil) do
+  begin
     {find where the walker item should be in the sorted list to its
      left - we walk the sorted sublist making a note of the parent as
      we go so that we can insert properly. Note that the loop below
@@ -389,7 +406,8 @@ begin
      won't run off the end of the list}
     TempParent := FHead;
     Temp := TempParent^.slnNext;
-    while (aCompare(Temp^.slnData, Walker^.slnData) < 0) do begin
+    while (aCompare(Temp^.slnData, Walker^.slnData) < 0) do
+    begin
       TempParent := Temp;
       Temp := TempParent^.slnNext;
     end;
@@ -560,7 +578,9 @@ procedure TtdSingleLinkList.MoveNext;
 begin
   {advance the cursor to its own next pointer, ignore attempts to move
    beyond the end of the list}
-  if (FCursor <> nil) then begin
+  {将游标移动到下一个节点，如果超出范围则不做任何操作}
+  if (FCursor <> nil) then
+  begin
     FParent := FCursor;
     FCursor := FCursor^.slnNext;
     inc(FCursorIx);
@@ -700,14 +720,18 @@ var
   WorkCursorIx : longint;
 begin
   {check for a valid index}
+  {检查索引是否合法}
   if (aIndex < 0) or (aIndex >= Count) then
     sllError(tdeListInvalidIndex, 'sllPositionAtNth');
   {take care of easy case}
+  {处理简单情况}
   if (aIndex = FCursorIx) then
     Exit;
   {--now use local variables for speed--}
+  {为了提高速度使用局部变量}
   {if the index wanted is before the cursor's index, move work cursor
    before all of the nodes}
+  {如果所需要的索引在游标之前，那么将工作游标游标移动到头结点}
   if (aIndex < FCursorIx) then
   begin
     WorkCursor := FHead;
@@ -715,6 +739,7 @@ begin
     WorkCursorIx := -1;
   end
   {otherwise set work cursor to current cursor}
+  {否则将工作游标值为当前游标}
   else
   begin
     WorkCursor := FCursor;
@@ -723,6 +748,7 @@ begin
   end;
   {while the work cursor index is less than the index required,
    advance the work cursor}
+  {当工作游标索引小于所需索引时，向后移动工作游标}
   while (WorkCursorIx < aIndex) do
   begin
     WorkParent := WorkCursor;
@@ -730,6 +756,7 @@ begin
     inc(WorkCursorIx);
   end;
   {set the real cursor equal to the work cursor}
+  {将实际游标设置成工作游标}
   FCursor := WorkCursor;
   FParent := WorkParent;
   FCursorIx := WorkCursorIx;
@@ -764,8 +791,10 @@ constructor TtdDoubleLinkList.Create;
 begin
   inherited Create;
   {save the dispose procedure}
+  {保存释放过程}
   FDispose := aDispose;
   {get the node manager}
+  {获得节点管理器}
   dllGetNodeManager;
   {allocate a head and a tail node and link them together}
   FHead := PdlNode(DLNodeManager.AllocNode);
@@ -993,7 +1022,8 @@ begin
    closer to the relevant end; work out the shortest route}
   if (aIndex < WorkCursorIx) then
   begin
-    if ((aIndex - 0) < (WorkCursorIx - aIndex)) then begin
+    if ((aIndex - 0) < (WorkCursorIx - aIndex)) then
+    begin
       {start at front and work forwards towards aIndex}
       WorkCursor := FHead;
       WorkCursorIx := -1;
@@ -1001,7 +1031,8 @@ begin
   end
   else {aIndex > FCursorIx}
   begin
-    if ((aIndex - WorkCursorIx) < (Count - aIndex)) then begin
+    if ((aIndex - WorkCursorIx) < (Count - aIndex)) then
+    begin
       {start at end and work back towards aIndex}
       WorkCursor := FTail;
       WorkCursorIx := Count;
@@ -1097,10 +1128,12 @@ var
 begin
   {if the cursor is at the head, rather than raise an exception, move
    it forwards one node}
+  {如果游标在头结点，那么在头结点后面插入而不是提示错误}
   if (FCursor = FHead) then
     MoveNext;
   {allocate a new node and insert before the cursor}
-  NewNode := PdlNode(DLNodeManager.AllocNode);
+  {分配一个新的节点并插入到游标前面}
+  NewNode := PdlNode(DLNodeManager.AllocNode); // 使用节点管理器来获得节点
   NewNode^.dlnData := aItem;
   NewNode^.dlnNext := FCursor;
   NewNode^.dlnPrior := FCursor^.dlnPrior;
@@ -1166,13 +1199,15 @@ begin
     BLCursorIx := -1;
     ListCount := Count;
     {while there are still nodes to check...}
-    while (ListCount <> 0) do begin
+    while (ListCount <> 0) do
+    begin
       {calculate the midpoint; it will be at least 1}
       MidPoint := (ListCount + 1) div 2;
       {move that many nodes along}
       WorkCursor := BLCursor;
       WorkCursorIx := BLCursorIx;
-      for i := 1 to MidPoint do begin
+      for i := 1 to MidPoint do
+      begin
         WorkCursor := WorkCursor^.dlnNext;
         inc(WorkCursorIx);
       end;
@@ -1180,14 +1215,16 @@ begin
       CompareResult := aCompare(WorkCursor^.dlnData, aItem);
       {if the node's data is less than the item, shrink the list, and
        try again from where we're at}
-      if (CompareResult < 0) then begin
+      if (CompareResult < 0) then
+      begin
         dec(ListCount, MidPoint);
         BLCursor := WorkCursor;
         BLCursorIx := WorkCursorIx;
       end
       {if the node's data is greater than the item, shrink the list,
        and try again}
-      else if (CompareResult > 0) then begin
+      else if (CompareResult > 0) then
+      begin
         ListCount := MidPoint - 1;
       end
       {otherwise we found it; set the real cursor}
@@ -1342,7 +1379,8 @@ begin
     dllMergesort(aCompare, FHead, Count);
     Dad := FHead;
     Walker := FHead^.dlnNext;
-    while (Walker <> nil) do begin
+    while (Walker <> nil) do
+    begin
       Walker^.dlnPrior := Dad;
       Dad := Walker;
       Walker := Dad^.dlnNext;
@@ -1364,7 +1402,8 @@ begin
     MoveBeforeFirst;
     MoveNext;
     while not IsAfterLast do begin
-      if (aCompare(Examine, aItem) = 0) then begin
+      if (aCompare(Examine, aItem) = 0) then
+      begin
         Result := true;
         Exit;
       end;
@@ -1384,9 +1423,11 @@ begin
   begin
     MoveBeforeFirst;
     MoveNext;
-    while not IsAfterLast do begin
+    while not IsAfterLast do
+    begin
       Compare := aCompare(Examine, aItem);
-      if (Compare >= 0) then begin
+      if (Compare >= 0) then
+      begin
         Result := (Compare = 0);
         Exit;
       end;
@@ -1405,7 +1446,8 @@ begin
     MoveBeforeFirst;
     MoveNext;
     while not IsAfterLast do begin
-      if (aCompare(Examine, aItem) = 0) then begin
+      if (aCompare(Examine, aItem) = 0) then
+      begin
         Result := true;
         Exit;
       end;
@@ -1427,7 +1469,8 @@ begin
     MoveNext;
     while not IsAfterLast do begin
       Compare := aCompare(Examine, aItem);
-      if (Compare >= 0) then begin
+      if (Compare >= 0) then
+      begin
         Result := (Compare = 0);
         Exit;
       end;

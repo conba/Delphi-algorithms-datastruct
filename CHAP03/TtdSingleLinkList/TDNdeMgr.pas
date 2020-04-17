@@ -163,7 +163,8 @@ begin
   {$ELSE}
   {add the node (if non-nil) to the top of the free list}
   {将节点(如果非空)加到空闲列表顶部}
-  if (aNode <> nil) then begin
+  if (aNode <> nil) then
+  begin
     {$IFDEF DebugMode}
     nmValidateNode(aNode);
     {$ENDIF}
