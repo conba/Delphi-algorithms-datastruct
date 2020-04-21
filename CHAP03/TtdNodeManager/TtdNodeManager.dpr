@@ -1,8 +1,11 @@
 program TtdNodeManager;
 
 uses
+  ExceptionLog,
   Forms,
-  Main in 'Main.pas' {Form13};
+  Main in 'Main.pas' {Form13},
+  TDNdeMgr in 'TDNdeMgr.pas',
+  TDBasics in 'TDBasics.pas';
 
 {$R *.res}
 

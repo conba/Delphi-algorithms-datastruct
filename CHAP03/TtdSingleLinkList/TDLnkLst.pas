@@ -67,7 +67,7 @@ type
       function sllMergesort(aCompare   : TtdCompareFunc;
                             aPriorNode : PslNode;
                             aCount     : longint) : PslNode;
-      // 定位游标
+      // 将游标移动到某个索引位置
       procedure sllPositionAtNth(aIndex : longint);
     public
       constructor Create(aDispose : TtdDisposeProc);

@@ -26,11 +26,18 @@ type
     FPageSize: Cardinal;  // 页的字节数
     FName: TtdNameString;
   protected
-      procedure nmAllocNewPage;
+    // 申请新的页面
+    procedure nmAllocNewPage;
+    // 判断节点是否在所有的页内
+    procedure nmValidateNode(aNode : pointer);
+    procedure nmError(aErrorCode  : integer; const aMethodName : TtdNameString);
   public
     constructor Create(aNodeSize: Cardinal);
     destructor Destroy; override;
     function AllocNode: Pointer;
+    // 将节点添加到空闲列表
+    procedure FreeNode(aNode : pointer);
+    property Name: TtdNameString read FName write FName;
   end;
 
 implementation
@@ -49,9 +56,12 @@ type
 
 function TNodeManager.AllocNode: Pointer;
 begin
+  Result := nil;
   GetMem(Result, FNodeSize);
   if FFreeList = nil then
-
+    nmAllocNewPage;
+  Result := FFreeList;
+  FFreeList := PGenericNode(FFreeList)^.gnnext
 end;
 
 constructor TNodeManager.Create(aNodeSize: Cardinal);
@@ -80,9 +90,57 @@ begin
   inherited;
 end;
 
-procedure TNodeManager.nmAllocNewPage;
+procedure TNodeManager.FreeNode(aNode: pointer);
 begin
+  if Assigned(aNode) then
+  begin
+    nmValidateNode(aNode);
+    // 如果节点非空，则加到空闲列表顶部
+    PGenericNode(aNode)^.gnnext := FFreeList;
+    FFreeList := aNode;
+  end;
+end;
 
+procedure TNodeManager.nmAllocNewPage;
+var
+  PNewPage: PAnsiChar;
+  i: Integer;
+begin
+  GetMem(PNewPage, FPageSize);
+  if Assigned(PNewPage) then
+  begin
+    PGenericNode(PNewPage)^.gnnext := FPageHead;
+    FPageHead := PNewPage;
+  end;
+  Inc(PNewPage, SizeOf(Pointer));
+  for I := FNodesPerPage - 1 downto 0 do
+  begin
+    FreeNode(PNewPage);
+    Inc(PNewPage, FNodeSize);
+  end;
+end;
+
+procedure TNodeManager.nmError(aErrorCode: integer;
+  const aMethodName: TtdNameString);
+begin
+  if (Name = '') then
+    Name := '-unnamed-';
+  raise EtdNodeMgrException.Create(
+     FmtLoadStr(aErrorCode,
+                [UnitName, ClassName, aMethodName, Name]));
+end;
+
+procedure TNodeManager.nmValidateNode(aNode: pointer);
+var
+  PPageHead: PAnsiChar;
+begin
+  PPageHead := FPageHead;
+  while Assigned(PPageHead) do
+  begin
+    if (PPageHead < aNode) and (aNode < PPageHead + FPageSize) then
+      Exit;
+    PPageHead := PAnsiChar(PGenericNode(PPageHead)^.gnnext);
+  end;
 end;
 
 end.

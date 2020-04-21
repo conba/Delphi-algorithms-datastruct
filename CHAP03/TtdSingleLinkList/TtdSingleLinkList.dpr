@@ -7,7 +7,8 @@ uses
   TDBasics in 'TDBasics.pas',
   TDLnkLst in 'TDLnkLst.pas',
   TDNdeMgr in 'TDNdeMgr.pas',
-  TTDNdeMgr in 'TTDNdeMgr.pas';
+  TTDNdeMgr in 'TTDNdeMgr.pas',
+  TDMyLnkLst in 'TDMyLnkLst.pas';
 
 {$R *.res}
 
