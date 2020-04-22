@@ -1,4 +1,4 @@
-unit TTDNdeMgr;
+unit TDMyNdeMgr;
 
 {$I TDDefine.inc}
 
@@ -17,7 +17,7 @@ uses
   TDBasics;
 
 type
-  TNodeManager = class
+  TMyNodeManager = class
   private
     FNodeSize: Cardinal; // 节点大小
     FFreeList: Pointer;  // 节点的空闲列表
@@ -54,7 +54,7 @@ type
 
 { TNodeManager }
 
-function TNodeManager.AllocNode: Pointer;
+function TMyNodeManager.AllocNode: Pointer;
 begin
   Result := nil;
   GetMem(Result, FNodeSize);
@@ -64,7 +64,7 @@ begin
   FFreeList := PGenericNode(FFreeList)^.gnnext
 end;
 
-constructor TNodeManager.Create(aNodeSize: Cardinal);
+constructor TMyNodeManager.Create(aNodeSize: Cardinal);
 begin
   FNodeSize := ((aNodeSize + 3) shl 2) shr 2;
   FNodesPerPage := (PageSize - SizeOf(Pointer)) div FNodeSize;
@@ -77,7 +77,7 @@ begin
   end;
 end;
 
-destructor TNodeManager.Destroy;
+destructor TMyNodeManager.Destroy;
 var
   Temp: Pointer;
 begin
@@ -90,7 +90,7 @@ begin
   inherited;
 end;
 
-procedure TNodeManager.FreeNode(aNode: pointer);
+procedure TMyNodeManager.FreeNode(aNode: pointer);
 begin
   if Assigned(aNode) then
   begin
@@ -101,7 +101,7 @@ begin
   end;
 end;
 
-procedure TNodeManager.nmAllocNewPage;
+procedure TMyNodeManager.nmAllocNewPage;
 var
   PNewPage: PAnsiChar;
   i: Integer;
@@ -120,7 +120,7 @@ begin
   end;
 end;
 
-procedure TNodeManager.nmError(aErrorCode: integer;
+procedure TMyNodeManager.nmError(aErrorCode: integer;
   const aMethodName: TtdNameString);
 begin
   if (Name = '') then
@@ -130,7 +130,7 @@ begin
                 [UnitName, ClassName, aMethodName, Name]));
 end;
 
-procedure TNodeManager.nmValidateNode(aNode: pointer);
+procedure TMyNodeManager.nmValidateNode(aNode: pointer);
 var
   PPageHead: PAnsiChar;
 begin
