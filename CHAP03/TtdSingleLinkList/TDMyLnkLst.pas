@@ -380,7 +380,10 @@ end;
 
 function TtdMyDoubleLinkList.Add(aItem: pointer): longint;
 begin
-
+  if FCursor = FHead then
+    MoveNext;
+  dllPositionAtNth(0);
+  InsertAtCursor(aItem);
 end;
 
 procedure TtdMyDoubleLinkList.Clear;
@@ -423,7 +426,8 @@ end;
 
 procedure TtdMyDoubleLinkList.Delete(aIndex: Integer);
 begin
-
+  dllPositionAtNth(aIndex);;
+  DeleteAtCursor;
 end;
 
 procedure TtdMyDoubleLinkList.DeleteAtCursor;
@@ -461,7 +465,8 @@ end;
 
 function TtdMyDoubleLinkList.dllGetItem(aIndex: Integer): pointer;
 begin
-
+  dllPositionAtNth(aIndex);
+  Result := FCursor^.dlData;
 end;
 
 class procedure TtdMyDoubleLinkList.dllGetNodeManager;
@@ -484,13 +489,52 @@ begin
 end;
 
 procedure TtdMyDoubleLinkList.dllPositionAtNth(aIndex: Integer);
+var
+  TempNode: PdlNode;
+  TempCursorIx: Integer;
 begin
+  if (aIndex < 0) or (aIndex >Count) then
+    dllError(tdeListInvalidIndex, 'dllPositionAtNth');
 
+  TempNode := FCursor;
+  TempCursorIx := FCursorIx;
+  if aIndex < FCursorIx then
+  begin
+    if aIndex < (FCursorIx - aIndex) then
+    begin
+      TempNode := FHead^.dlNext;
+      TempCursorIx := 0;
+    end;
+  end
+  else
+  begin
+    if (FCount - aIndex) < (FCursorIx - aIndex) then
+    begin
+      TempNode := FTail;
+      TempCursorIx := FCount;
+    end;
+  end;
+
+  while TempCursorIx < aIndex do
+  begin
+    TempNode := TempNode^.dlNext;
+    Inc(TempCursorIx);
+  end;
+
+  while TempNode > aIndex do
+  begin
+    TempNode := TempNode^.dlPrior;
+    Dec(TempCursorIx);
+  end;
+
+  FCursor := TempNode;
+  FCursorIx := TempCursorIx;
 end;
 
 procedure TtdMyDoubleLinkList.dllSetItem(aIndex: Integer; aItem: pointer);
 begin
-
+  dllPositionAtNth(aIndex);
+  FCursor^.dlData := aItem;
 end;
 
 function TtdMyDoubleLinkList.Examine: pointer;
@@ -502,23 +546,52 @@ end;
 
 function TtdMyDoubleLinkList.First: pointer;
 begin
-//  if FHead^.dlPrior then
-
+  dllPositionAtNth(0);
+  Result := FCursor^.dlData;
 end;
 
 function TtdMyDoubleLinkList.IndexOf(aItem: pointer): longint;
+var
+  TempNode: PdlNode;
+  TempIx: Integer;
 begin
-
+  TempNode := FHead^.dlNext;
+  TempIx := 0;
+  while TempNode <> FTail do
+  begin
+    if TempNode^.dlData = aItem then
+    begin
+      Result := TempIx;
+      FCursor := TempNode;
+      FCursorIx := TempIx;
+      Exit;
+    end;
+    Inc(TempIx);
+    TempNode := TempNode^.dlNext;
+  end;
+  Result := -1;
 end;
 
 procedure TtdMyDoubleLinkList.Insert(aIndex: Integer; aItem: pointer);
 begin
-
+  dllPositionAtNth(aIndex);
+  InsertAtCursor(aItem);
 end;
 
 procedure TtdMyDoubleLinkList.InsertAtCursor(aItem: pointer);
+var
+  TempNode: PdlNode;
 begin
-
+  if FCursor = FHead then
+    MoveNext;
+  TempNode := DlNodeManager.AllocNode;
+  TempNode^.dlData := aItem;
+  TempNode^.dlPrior := FCursor^.dlPrior;
+  FCursor^.dlPrior^.dlNext := TempNode;
+  FCursor^.dlPrior := TempNode;
+  TempNode^.dlNext := FCursor;
+  FCursor = TempNode;
+  Inc(FCount);
 end;
 
 procedure TtdMyDoubleLinkList.InsertionSort(aCompare: TtdCompareFunc);
@@ -534,22 +607,22 @@ end;
 
 function TtdMyDoubleLinkList.IsAfterLast: boolean;
 begin
-
+  Result := FCursor = FTail;
 end;
 
 function TtdMyDoubleLinkList.IsBeforeFirst: boolean;
 begin
-
+  Result := FCursor = FHead;
 end;
 
 function TtdMyDoubleLinkList.IsEmpty: boolean;
 begin
-
+  Result := FCount = 0;
 end;
 
 function TtdMyDoubleLinkList.Last: pointer;
 begin
-
+  FCursor := FTail^.dlPrior;
 end;
 
 function TtdMyDoubleLinkList.Locate(aItem: pointer;
@@ -560,7 +633,8 @@ end;
 
 procedure TtdMyDoubleLinkList.MoveAfterLast;
 begin
-
+  FCursor := FTail;
+  FCursorIx := Count;
 end;
 
 procedure TtdMyDoubleLinkList.MoveBeforeFirst;
@@ -571,17 +645,26 @@ end;
 
 procedure TtdMyDoubleLinkList.MoveNext;
 begin
-
+  if FCursor <> FTail then
+  begin
+    FCursor := FCursor^.dlNext;
+    Inc(FCursor);
+  end;
 end;
 
 procedure TtdMyDoubleLinkList.MovePrior;
 begin
-
+  if FCursor <> FHead then
+  begin
+    FCursor := FCursor^.dlPrior;
+    Dec(FCursorIx);
+  end;
 end;
 
 procedure TtdMyDoubleLinkList.Remove(aItem: pointer);
 begin
-
+  if IndexOf(aItem) <> -1 then
+    DeleteAtCursor;
 end;
 
 procedure TtdMyDoubleLinkList.Sort(aCompare: TtdCompareFunc);
