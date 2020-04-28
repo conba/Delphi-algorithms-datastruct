@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <Transactions>
+    <Transaction>2020-04-28 20:10:40.436,=C:\Users\Administrator\Documents\RAD Studio\Projects\Unit13.pas</Transaction>
+    <Transaction>2020-04-28 20:11:48.935,C:\Users\Administrator\Desktop\Delphi-algorithms-datastruct\CHAP03\TtdStack\main.pas=C:\Users\Administrator\Documents\RAD Studio\Projects\Unit13.pas</Transaction>
+    <Transaction>2020-04-28 20:11:48.935,C:\Users\Administrator\Desktop\Delphi-algorithms-datastruct\CHAP03\TtdStack\main.dfm=C:\Users\Administrator\Documents\RAD Studio\Projects\Unit13.dfm</Transaction>
+    <Transaction>2020-04-28 20:11:55.050,C:\Users\Administrator\Desktop\Delphi-algorithms-datastruct\CHAP03\TtdStack\TtdStack.dproj=C:\Users\Administrator\Documents\RAD Studio\Projects\Project6.dproj</Transaction>
+  </Transactions>
+</BorlandProject>
