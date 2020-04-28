@@ -164,7 +164,7 @@ begin
   FHead^.slnNext := nil;
   FHead^.slnData := nil;
 end;
-{--------}
+
 destructor TtdStack.Destroy;
 begin
   {remove all the remaining nodes; free the head node}
@@ -173,7 +173,7 @@ begin
   SLNodeManager.FreeNode(FHead);
   inherited Destroy;
 end;
-{--------}
+
 procedure TtdStack.Clear;
 var
   Temp : PslNode;
@@ -190,19 +190,19 @@ begin
   end;
   FCount := 0;
 end;
-{--------}
+
 function TtdStack.Examine : pointer;
 begin
   if (Count = 0) then
     sError(tdeStackIsEmpty, 'Examine');
   Result := FHead^.slnNext^.slnData;
 end;
-{--------}
+
 function TtdStack.IsEmpty : boolean;
 begin
   Result := (Count = 0);
 end;
-{--------}
+
 function TtdStack.Pop : pointer;
 var
   Temp : PslNode;
@@ -217,7 +217,7 @@ begin
   SLNodeManager.FreeNode(Temp);
   dec(FCount);
 end;
-{--------}
+
 procedure TtdStack.Push(aItem : pointer);
 var
   Temp : PslNode;
@@ -229,7 +229,7 @@ begin
   FHead^.slnNext := Temp;
   inc(FCount);
 end;
-{--------}
+
 procedure TtdStack.sError(aErrorCode  : integer;
                     const aMethodName : TtdNameString);
 begin
@@ -239,7 +239,7 @@ begin
      FmtLoadStr(aErrorCode,
                 [UnitName, ClassName, aMethodName, Name]));
 end;
-{--------}
+
 class procedure TtdStack.sGetNodeManager;
 begin
   {if the node manager hasn't been allocated yet, do so}
