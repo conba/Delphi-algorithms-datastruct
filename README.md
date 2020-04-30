@@ -1,5 +1,9 @@
 # Delphi 算法与数据结构
 
+[TOC]
+
+
+
 ## 长串
 
 * String类型的长串变量只是一个指向特定格式的内存块的指针。
@@ -83,6 +87,28 @@ constructor Create(aElementSize: Integer);
 begin
   FActElemSize := aElementSize;
   FElementSize := (aElementSize)
+end;
+
+// 在数组类中Capacity字段标识当前数组对象的容量，Count字段标识当前数组对象中真正的存储个数，当Count = Capacity 时再插入数据需要扩展Capacity，当Capacity = MaxCount 时不允许继续添加数据
+
+procedure rlExpand;
+var
+  NewCapacity: Integer;
+begin
+  if Capacity = 0 then
+    NewCapacity := 4
+  {如果当前容量小于64，则使新容量在当前基础上增加16个元素}
+  else if (Capacity < 64) then
+    NewCapacity := Capacity + 16
+  {如果当前容量大于等于64，则使新容量在增加当前容量的1/4}
+  else
+    NewCapacity := Capacity + (Capacity div 4);
+  {确保不至于超出数组的上限}
+  if (NewCapacity > FMaxElemCount) then
+    NewCapacity := FMaxElemCount;
+  if (NewCapacity = Capacity) then
+    rlError(tdeAtMaxCapacity, 'rlExpand', 0);
+  Capacity := NewCapacity;
 end;
 ```
 
