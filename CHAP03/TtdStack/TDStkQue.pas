@@ -262,7 +262,7 @@ begin
     aCapacity := 16;
   FList.Count := aCapacity;
 end;
-{--------}
+
 destructor TtdArrayStack.Destroy;
 begin
   if (Count <> 0) then
@@ -270,7 +270,7 @@ begin
   FList.Free;
   inherited Destroy;
 end;
-{--------}
+
 procedure TtdArrayStack.Clear;
 var
   i : integer;
@@ -282,19 +282,19 @@ begin
     FCount := 0;
   end;
 end;
-{--------}
+
 function TtdArrayStack.Examine : pointer;
 begin
   if (Count = 0) then
     asError(tdeStackIsEmpty, 'Examine');
   Result := FList[pred(Count)];
 end;
-{--------}
+
 function TtdArrayStack.IsEmpty : boolean;
 begin
   Result := (Count = 0);
 end;
-{--------}
+
 procedure TtdArrayStack.asError(aErrorCode  : integer;
             const aMethodName : TtdNameString);
 begin
@@ -304,12 +304,12 @@ begin
      FmtLoadStr(aErrorCode,
                 [UnitName, ClassName, aMethodName, Name]));
 end;
-{--------}
+
 procedure TtdArrayStack.asGrow;
 begin
   FList.Count := (FList.Count * 3) div 2;
 end;
-{--------}
+
 function TtdArrayStack.Pop : pointer;
 begin
   {make sure we have an item to pop}
@@ -320,7 +320,7 @@ begin
   {the item to pop is at the end of the list}
   Result := FList[Count];
 end;
-{--------}
+
 procedure TtdArrayStack.Push(aItem : pointer);
 begin
   {check to see whether the stack is currently full; if so, grow the
@@ -350,7 +350,7 @@ begin
   {make the tail pointer point to the head node}
   FTail := FHead;
 end;
-{--------}
+
 destructor TtdQueue.Destroy;
 begin
   {remove all the remaining nodes; free the head node}
@@ -359,7 +359,7 @@ begin
   SLNodeManager.FreeNode(FHead);
   inherited Destroy;
 end;
-{--------}
+
 procedure TtdQueue.Clear;
 var
   Temp : PslNode;
@@ -379,7 +379,7 @@ begin
    node}
   FTail := FHead;
 end;
-{--------}
+
 function TtdQueue.Dequeue : pointer;
 var
   Temp : PslNode;
@@ -396,7 +396,7 @@ begin
   if (Count = 0) then
     FTail := FHead;
 end;
-{--------}
+
 procedure TtdQueue.Enqueue(aItem : pointer);
 var
   Temp : PslNode;
@@ -410,19 +410,19 @@ begin
   FTail := Temp;
   inc(FCount);
 end;
-{--------}
+
 function TtdQueue.Examine : pointer;
 begin
   if (Count = 0) then
     qError(tdeQueueIsEmpty, 'Examine');
   Result := FHead^.slnNext^.slnData;
 end;
-{--------}
+
 function TtdQueue.IsEmpty : boolean;
 begin
   Result := (Count = 0);
 end;
-{--------}
+
 procedure TtdQueue.qError(aErrorCode  : integer;
                     const aMethodName : TtdNameString);
 begin
@@ -432,7 +432,7 @@ begin
      FmtLoadStr(aErrorCode,
                 [UnitName, ClassName, aMethodName, Name]));
 end;
-{--------}
+
 class procedure TtdQueue.qGetNodeManager;
 begin
   {if the node manager hasn't been allocated yet, do so}
@@ -450,12 +450,13 @@ begin
   {save the dispose procedure}
   FDispose := aDispose;
   {create the internal TList and make it have aCapacity elements}
+  {create the internal TList and make it have aCapacity elements}
   FList := TList.Create;
   if (aCapacity <= 1) then
     aCapacity := 16;
   FList.Count := aCapacity;
 end;
-{--------}
+
 destructor TtdArrayQueue.Destroy;
 begin
   if (Count <> 0) then
@@ -463,7 +464,7 @@ begin
   FList.Free;
   inherited Destroy;
 end;
-{--------}
+
 procedure TtdArrayQueue.aqError(aErrorCode  : integer;
                          const aMethodName : TtdNameString);
 begin
@@ -473,7 +474,7 @@ begin
      FmtLoadStr(aErrorCode,
                 [UnitName, ClassName, aMethodName, Name]));
 end;
-{--------}
+
 procedure TtdArrayQueue.aqGrow;
 var
   i     : integer;
@@ -494,7 +495,7 @@ begin
     FHead := ToInx;
   end;
 end;
-{--------}
+
 procedure TtdArrayQueue.Clear;
 begin
   if (Count > 0) and Assigned(FDispose) then begin
@@ -508,7 +509,7 @@ begin
   FTail := 0;
   FCount := 0;
 end;
-{--------}
+
 function TtdArrayQueue.Dequeue : pointer;
 begin
   {make sure we have an item to dequeue}
@@ -521,7 +522,7 @@ begin
   FHead := (FHead + 1) mod FList.Count;
   dec(FCount);
 end;
-{--------}
+
 procedure TtdArrayQueue.Enqueue(aItem : pointer);
 begin
   {add the item to the tail of the queue}
@@ -535,7 +536,7 @@ begin
   if (FTail = FHead) then
     aqGrow;
 end;
-{--------}
+
 function TtdArrayQueue.Examine : pointer;
 begin
   {make sure we have an item to examine}
@@ -544,7 +545,7 @@ begin
   {return the item at the head of the queue without dequeuing it}
   Result := FList[FHead];
 end;
-{--------}
+
 function TtdArrayQueue.IsEmpty : boolean;
 begin
   Result := (Count = 0);

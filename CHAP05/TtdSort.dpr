@@ -1,14 +1,11 @@
-program TtdStack;
+program TtdSort;
 
 uses
   Forms,
   main in 'main.pas' {Form13},
-  TDStkQue in 'TDStkQue.pas',
-  TDBasics in 'TDBasics.pas',
-  TDLnkLst in 'TDLnkLst.pas',
-  TDNdeMgr in 'TDNdeMgr.pas',
-  TDMyStack in 'TDMyStack.pas',
-  TDMyQue in 'TDMyQue.pas';
+  TDSorts in 'TDSorts.pas',
+  TDTList in 'TDTList.pas',
+  TDBasics in 'TDBasics.pas';
 
 {$R *.res}
 

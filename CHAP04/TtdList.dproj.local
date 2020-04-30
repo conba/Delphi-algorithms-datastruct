@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>1899-12-30 00:00:00.000.625,C:\Users\Administrator\Documents\RAD Studio\Projects\Project6.dproj=C:\Users\Administrator\Desktop\Delphi-algorithms-datastruct\CHAP04\TDTList\TtdList.dproj</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.880,C:\Users\Administrator\Documents\RAD Studio\Projects\Unit13.dfm=C:\Users\Administrator\Desktop\Delphi-algorithms-datastruct\CHAP04\TDTList\main.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.881,=C:\Users\Administrator\Desktop\Delphi-algorithms-datastruct\CHAP04\TDTList\TDBasics.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.615,=C:\Users\Administrator\Documents\RAD Studio\Projects\Unit13.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.880,C:\Users\Administrator\Documents\RAD Studio\Projects\Unit13.pas=C:\Users\Administrator\Desktop\Delphi-algorithms-datastruct\CHAP04\TDTList\main.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.604,=C:\Users\Administrator\Desktop\Delphi-algorithms-datastruct\CHAP04\TDTList\TDTList.pas</Transaction>
+  </Transactions>
+</BorlandProject>

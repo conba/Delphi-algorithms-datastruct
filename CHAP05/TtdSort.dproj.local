@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <Transactions>
+    <Transaction>2020-04-29 20:05:10.135,=C:\Users\Administrator\Documents\RAD Studio\Projects\Unit13.pas</Transaction>
+    <Transaction>2020-04-29 20:05:29.750,C:\Users\Administrator\Desktop\Delphi-algorithms-datastruct\CHAP05\main.pas=C:\Users\Administrator\Documents\RAD Studio\Projects\Unit13.pas</Transaction>
+    <Transaction>2020-04-29 20:05:29.750,C:\Users\Administrator\Desktop\Delphi-algorithms-datastruct\CHAP05\main.dfm=C:\Users\Administrator\Documents\RAD Studio\Projects\Unit13.dfm</Transaction>
+    <Transaction>2020-04-29 20:05:37.289,C:\Users\Administrator\Desktop\Delphi-algorithms-datastruct\CHAP05\TtdSort.dproj=C:\Users\Administrator\Documents\RAD Studio\Projects\Project6.dproj</Transaction>
+    <Transaction>2020-04-29 20:05:46.303,=C:\Users\Administrator\Desktop\Delphi-algorithms-datastruct\CHAP05\TDSorts.pas</Transaction>
+    <Transaction>2020-04-29 20:06:50.846,=C:\Users\Administrator\Desktop\Delphi-algorithms-datastruct\CHAP05\TDTList.pas</Transaction>
+    <Transaction>2020-04-29 20:07:41.434,=C:\Users\Administrator\Desktop\Delphi-algorithms-datastruct\CHAP05\TDBasics.pas</Transaction>
+  </Transactions>
+</BorlandProject>
