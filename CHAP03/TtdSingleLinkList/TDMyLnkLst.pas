@@ -78,6 +78,10 @@ type
     function IsBeforeFirst: Boolean;
     // 判断链表是否为空
     function IsEmpty: Boolean;
+    // 基于链表的二分查找
+    function SortedFind(aItem: Pointer; aCompare: TtdCompareFunc): Boolean;
+
+    property Count: Integer read FCount;
   end;
 
   TtdMyDoubleLinkList = class
@@ -374,6 +378,59 @@ begin
   FParent := TempNode;
   FCursor := TempNode^.slnNext;
   FCursorIx := TempIndex;
+end;
+
+function TtdMySingleLinkList.SortedFind(aItem: Pointer;
+  aCompare: TtdCompareFunc): Boolean;
+var
+  BLCursor: PslNode;
+  BLCursorIx: Integer;
+  WorkCursor, WorkParent: PslNode;
+  WorkCursorIx: Integer;
+  ListCount: Integer;
+  MidPoint: Integer;
+  i: Integer;
+  CompareResult: Integer;
+begin
+  BLCursor := FHead;
+  BLCursorIx := -1;
+  ListCount := Count;
+  while ListCount <> 0 do
+  begin
+    MidPoint := (ListCount + 1) div 2;
+    WorkCursor := BLCursor;
+    WorkCursorIx := BLCursorIx;
+    for I := 1 to MidPoint do
+    begin
+      WorkParent := WorkCursor;
+      WorkCursor := WorkCursor^.slnNext;
+      Inc(WorkCursorIx);
+    end;
+
+    CompareResult := aCompare(WorkCursor^.slnData, aItem);
+    // 节点数据小于给定元素
+    if CompareResult < 0 then
+    begin
+      ListCount := ListCount - MidPoint;
+      BLCursor := WorkCursor;
+      BLCursorIx := WorkCursorIx;
+    end
+    // 节点数据大于给定元素
+    else if CompareResult > 0 then
+    begin
+      ListCount := MidPoint - 1;
+    end
+    // 节点数据等于给定元素
+    else
+    begin
+      FCursor := WorkCursor;
+      FCursorIx := WorkCursorIx;
+      FParent := WorkParent;
+      Result := True;
+      Exit;
+    end;
+  end;
+  Result := False;
 end;
 
 { TtdMyDoubleLinkList }
