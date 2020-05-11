@@ -4,7 +4,8 @@ uses
   Forms,
   main in 'main.pas' {Form13},
   TDTList in 'TDTList.pas',
-  TDBasics in 'TDBasics.pas';
+  TDBasics in 'TDBasics.pas',
+  TDMyList in 'TDMyList.pas';
 
 {$R *.res}
 
