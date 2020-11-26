@@ -87,13 +87,16 @@ end;
 
 constructor TtdRecordList.Create(aElementSize: integer);
 begin
-  inherited;
   // 保留元素实际的大小
   FActElemSize := aElementSize;
   // 保留元素在数组中存储的大小（以4字节单位）
   FElementSize := ((aElementSize + 3) shr 2) shl 2;
   // 保留元素最大的个数
+  {$IFDEF  Delphi1}
+  FMaxElemCount := 65535 div FElementSize;
+  {$ELSE}
   FMaxElemCount := MaxInt div FElementSize;
+  {$ENDIF}
 end;
 
 procedure TtdRecordList.Delete(aIndex: integer);
@@ -156,7 +159,7 @@ begin
 //      (Count - aIndex) * FElementSize);
   if aIndex < Count then
     System.Move((FArray + (aIndex * FElementSize))^,
-      (FArray + (System.Succ(aIndex) * FElementSize))^
+      (FArray + (System.Succ(aIndex) * FElementSize))^,
       (Count - aIndex) * FElementSize);
   System.Move(aItem^, (FArray + (aIndex * FElementSize))^,
     FActElemSize);
@@ -269,7 +272,7 @@ begin
       Capacity := aCount;
     {如果新的个数大于原有个数，则置新元素为二进制0}
     if aCount > FCount then
-      FillChar(FArray + (FCount * FElementSize)^,
+      FillChar((FArray + (FCount * FElementSize))^,
       (aCount - FCount) * FElementSize, 0);
     {保留新的元素个数}
     FCount := aCount;

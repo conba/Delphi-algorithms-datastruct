@@ -3,10 +3,16 @@ unit Main;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
+  Windows, Messages, SysUtils, Variants, Classes, Graphics,
+  Controls, Forms, Dialogs, StdCtrls;
 
 type
+  TMyRec = record
+    dValue: Double;
+    iValue: Integer;
+  end;
+  pMyRec = ^TMyRec;
+
   TForm1 = class(TForm)
     btn1: TButton;
     procedure btn1Click(Sender: TObject);
@@ -27,8 +33,14 @@ uses
 procedure TForm1.btn1Click(Sender: TObject);
 var
   a: TtdRecordList;
+  Rec, Rec1: pMyRec;
 begin
-  a := TtdRecordList.Create(2);
+  a := TtdRecordList.Create(SizeOf(TMyRec));
+  New(Rec);
+  Rec^.dValue := 1.2;
+  Rec^.iValue := 1;
+  a.add(Pointer(Rec));
+  Rec1 := a[0];
 end;
 
 end.
