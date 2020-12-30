@@ -19,17 +19,26 @@ uses
   TDBasics,
   TDTList;
 
+procedure TDSimpleListShuffle(aList: TList; aStart, aEnd: Integer);
+procedure TDListShuffle(aList: TList; aStart, aEnd: Integer);
+
 procedure TDBubbleSort(aList    : TList;
                        aFirst   : integer;
                        aLast    : integer;
                        aCompare : TtdCompareFunc);
   {-Standard bubble sort}
+// 冒小泡，从小到大排序
+procedure MyBubbleSort(aList: TList; aFirst: integer; aLast: Integer;
+  aCompare: TtdCompareFunc);
 
+// 摇动排序
 procedure TDShakerSort(aList    : TList;
                        aFirst   : integer;
                        aLast    : integer;
                        aCompare : TtdCompareFunc);
   {-Standard shaker sort--double ended bubble sort}
+procedure MySharkerSort(aList: TList; aFirst: integer; aLast: Integer;
+  aCompare: TtdCompareFunc);
 
 procedure TDCombSort(aList    : TList;
                      aFirst   : integer;
@@ -42,14 +51,27 @@ procedure TDSelectionSort(aList    : TList;
                           aLast    : integer;
                           aCompare : TtdCompareFunc);
   {-Standard selection sort}
+procedure MySelectionSort(aList: TList; aFirst: integer; aLast: integer;
+  aCompare : TtdCompareFunc);
 
+// 未优化的插入排序
 procedure TDInsertionSortStd(aList    : TList;
                              aFirst   : integer;
                              aLast    : integer;
                              aCompare : TtdCompareFunc);
-  {-Standard insertion sort}
 
+procedure MyInsertionSortStd(aList    : TList;
+                             aFirst   : integer;
+                             aLast    : integer;
+                             aCompare : TtdCompareFunc);
+  {-Standard insertion sort}
+// 以优化的插入排序
 procedure TDInsertionSort(aList    : TList;
+                          aFirst   : integer;
+                          aLast    : integer;
+                          aCompare : TtdCompareFunc);
+
+procedure MyInsertionSort(aList    : TList;
                           aFirst   : integer;
                           aLast    : integer;
                           aCompare : TtdCompareFunc);
@@ -112,6 +134,45 @@ procedure TDHeapSort(aList    : TList;
 
 implementation
 
+procedure TDSimpleListShuffle(aList: TList; aStart, aEnd: Integer);
+var
+  Range: Integer;
+  Inx: Integer;
+  RandomInx: Integer;
+  TempPtr: Pointer;
+begin
+  TDValidateListRange(aList, aStart, aEnd, 'TDSimpleListShuffle');
+  Range := Succ(aStart - aEnd);
+  for Inx := aStart to aEnd do
+  begin
+    RandomInx := aStart + Random(Range);
+    TempPtr := aList.List^[Inx];
+    aList.List^[Inx] := aList.List^[RandomInx];
+    aList.List^[RandomInx] := TempPtr;
+  end;
+end;
+
+procedure TDListShuffle(aList: TList; aStart, aEnd: Integer);
+var
+  Range: Integer;
+  Inx: Integer;
+  RandomInx: Integer;
+  TempPtr: Pointer;
+begin
+  TDValidateListRange(aList, aStart, aEnd, 'TDListShuffle');
+  {对于每个元素，从右边计数}
+  for Inx := (aEnd - aStart) downto aStart + 1 do
+  {从aStart到目前所处元素的索引这个范围内生成一个随机数}
+  begin
+  {如果随机索引与我们的索引不相等，则实现元素交换}
+    if (RandomInx <> Inx) then
+    begin
+      TempPtr := aList.List^[Inx];
+      aList.List^[Inx] := aList.List^[RandomInx];
+      aList.List^[RandomInx] := TempPtr;
+    end;
+  end;
+end;
 
 {===implemented routines (except advanced sorts)=====================}
 procedure TDBubbleSort(aList    : TList;
@@ -123,8 +184,10 @@ var
   Temp : pointer;
   Done : boolean;
 begin
+  // 检查输入的值是否正确：例如List为空，first和last是否越界等。
   TDValidateListRange(aList, aFirst, aLast, 'TDBubbleSort');
-  for i := aFirst to pred(aLast) do begin
+  for i := aFirst to pred(aLast) do
+  begin
     Done := true;
     for j := aLast downto succ(i) do
       if (aCompare(aList.List^[j], aList.List^[j-1]) < 0) then
@@ -139,7 +202,33 @@ begin
       Exit;
   end;
 end;
-{--------}
+
+procedure MyBubbleSort(aList: TList; aFirst: integer; aLast: Integer;
+  aCompare: TtdCompareFunc);
+var
+  I, j: Integer;
+  pTemp: Pointer;
+  bDone: Boolean;
+begin
+  TDValidateListRange(aList, aFirst, aLast, 'MyBubbleSort');
+  for I := aFirst to aLast - 1 do
+  begin
+    bDone := True;
+    for J := aLast downto i + 1 do
+    begin
+      if (aCompare(aList.List^[j], aList.List^[j - 1]) < 0) then
+      begin
+        pTemp := aList.List^[j];
+        aList.List^[j] := aList.List^[j];
+        aList.List^[j - 1] := pTemp;
+        bDone := False;
+      end;
+    end;
+    if bDone = True then
+      Exit;
+  end;
+end;
+
 procedure TDCombSort(aList    : TList;
                      aFirst   : integer;
                      aLast    : integer;
@@ -177,7 +266,7 @@ begin
     end;
   until Done and (Gap = 1);
 end;
-{--------}
+
 procedure TDInsertionSort(aList    : TList;
                           aFirst   : integer;
                           aLast    : integer;
@@ -212,7 +301,42 @@ begin
     aList.List^[j] := Temp;
   end;
 end;
-{--------}
+
+procedure MyInsertionSort(aList    : TList;
+                          aFirst   : integer;
+                          aLast    : integer;
+                          aCompare : TtdCompareFunc);
+var
+  I, J: Integer;
+  pTemp: Pointer;
+  iMinIndex: Integer;
+begin
+  iMinIndex := aFirst;
+  for I := aFirst + 1 to aLast do
+  begin
+    if aCompare(aList.List^[i], aList.List^[i - 1]) < 0 then
+      iMinIndex := i;
+  end;
+  if iMinIndex <> aFirst then
+  begin
+    pTemp := aList.List^[aFirst];
+    aList.List^[aFirst] := aList.List^[iMinIndex];
+    aList.List^[iMinIndex] := pTemp;
+  end;
+
+  for I := aFirst + 1 to aLast do
+  begin
+    pTemp := aList.List^[i];
+    j := i;
+    while aCompare(pTemp, aList.List^[j - 1]) < 0 do
+    begin
+      aList.List^[j] := aList.List^[j - 1];
+      Dec(j);
+    end;
+    aList.List^[j] := pTemp;
+  end;
+end;
+
 procedure TDInsertionSortStd(aList    : TList;
                              aFirst   : integer;
                              aLast    : integer;
@@ -228,14 +352,36 @@ begin
     j := i;
     while (j > aFirst) and
           (aCompare(Temp, aList.List^[j-1]) < 0) do
-          begin
+    begin
       aList.List^[j] := aList.List^[j-1];
       dec(j);
     end;
     aList.List^[j] := Temp;
   end;
 end;
-{--------}
+
+procedure MyInsertionSortStd(aList    : TList;
+                             aFirst   : integer;
+                             aLast    : integer;
+                             aCompare : TtdCompareFunc);
+var
+  i, j: Integer;
+  pTemp: Pointer;
+begin
+  TDValidateListRange(aList, aFirst, aLast, 'MyInsertionSortStd');
+  for I := aFirst + 1 to aLast do
+  begin
+    pTemp := aList.List^[i];
+    j := i;
+    while (j > aFirst) and (aCompare(pTemp, aList.List^[j - 1]) < 0) do
+    begin
+      aList.List^[j] := aList.List^[j - 1];
+      Dec(j);
+    end;
+    aList.List^[j] := pTemp;
+  end;
+end;
+
 procedure TDSelectionSort(aList    : TList;
                           aFirst   : integer;
                           aLast    : integer;
@@ -257,7 +403,31 @@ begin
     aList.List^[IndexOfMin] := Temp;
   end;
 end;
-{--------}
+
+procedure MySelectionSort(aList: TList; aFirst: integer; aLast: integer;
+  aCompare : TtdCompareFunc);
+var
+  I, J: Integer;
+  iMinIndex: Integer;
+  pTemp: Pointer;
+begin
+  for I := aFirst to aLast - 1 do
+  begin
+    iMinIndex := i;
+    for J := i + 1 to aLast do
+    begin
+      if aCompare(aList.List^[iMinIndex], aList.List^[j]) < 0 then
+        iMinIndex := j;
+    end;
+    if iMinIndex <> i then
+    begin
+      pTemp := aList.List^[i];
+      aList.List^[i] := aList.List^[iMinIndex];
+      aList.List^[iMinIndex] := pTemp;
+    end;
+  end;
+end;
+
 procedure TDShakerSort(aList    : TList;
                        aFirst   : integer;
                        aLast    : integer;
@@ -286,7 +456,40 @@ begin
     dec(aLast);
   end;
 end;
-{--------}
+
+procedure MySharkerSort(aList: TList; aFirst: integer; aLast: Integer;
+  aCompare: TtdCompareFunc);
+var
+  I, j: Integer;
+  pTemp: Pointer;
+  bDone: Boolean;
+begin
+  TDValidateListRange(aList, aFirst, aLast, 'MyShakerSort');
+  while aFirst < aLast do
+  begin
+    for I := aLast downto aFirst + 1 do
+    begin
+      if aCompare(aList.List^[i], aList.List^[i - 1]) < 0 then
+      begin
+        pTemp := aList.List^[i - 1];
+        aList.List^[i - 1] := aList.List^[i];
+        aList.List^[i] := pTemp;
+      end;
+    end;
+    Inc(aFirst);
+    for I := aFirst + 1 to aLast do
+    begin
+      if aCompare(aList.List^[i], aList.List^[i - 1]) < 0 then
+      begin
+        pTemp := aList.List[i];
+        aList.List^[i] := aList.List^[i - 1];
+        aList.List^[i - 1] := pTemp;
+      end;
+    end;
+    Dec(aLast);
+  end;
+end;
+
 procedure TDShellSort(aList    : TList;
                       aFirst   : integer;
                       aLast    : integer;
@@ -326,8 +529,6 @@ begin
     h := h div 3;
   end;
 end;
-{====================================================================}
-
 
 {===Standard mergesort===============================================}
 procedure MSS(aList    : TList;
@@ -379,7 +580,7 @@ begin
   {if there are any more items in the second list then they're already
    in place and we're done; if there aren't, we're still done}
 end;
-{--------}
+
 procedure TDMergeSortStd(aList    : TList;
                          aFirst   : integer;
                          aLast    : integer;
@@ -401,13 +602,11 @@ begin
     end;
   end;
 end;
-{====================================================================}
-
 
 {===Optimized mergesort==============================================}
 const
   MSCutOff = 15;
-{--------}
+
 procedure MSInsertionSort(aList    : TList;
                           aFirst   : integer;
                           aLast    : integer;
@@ -440,7 +639,7 @@ begin
     aList.List^[j] := Temp;
   end;
 end;
-{--------}
+
 procedure MS(aList    : TList;
              aFirst   : integer;
              aLast    : integer;
@@ -499,7 +698,7 @@ begin
   {if there are any more items in the second list then they're already
    in place and we're done; if there aren't, we're still done}
 end;
-{--------}
+
 procedure TDMergeSort(aList    : TList;
                       aFirst   : integer;
                       aLast    : integer;
@@ -522,8 +721,6 @@ begin
     end;
   end;
 end;
-{====================================================================}
-
 
 {===Standard quicksort===============================================}
 procedure QSS(aList    : TList;
@@ -558,7 +755,7 @@ begin
     aFirst := succ(R);
   end;
 end;
-{--------}
+
 procedure TDQuickSortStd(aList    : TList;
                          aFirst   : integer;
                          aLast    : integer;
@@ -567,9 +764,6 @@ begin
   TDValidateListRange(aList, aFirst, aLast, 'TDQuickSortStd');
   QSS(aList, aFirst, aLast, aCompare);
 end;
-{====================================================================}
-
-
 
 {===Non-recursive quicksort==========================================}
 procedure QSNR(aList    : TList;
@@ -625,7 +819,7 @@ begin
     end;
   end;
 end;
-{--------}
+
 procedure TDQuickSortNoRecurse(aList    : TList;
                                aFirst   : integer;
                                aLast    : integer;
@@ -634,8 +828,6 @@ begin
   TDValidateListRange(aList, aFirst, aLast, 'TDQuickSortNoRecurse');
   QSNR(aList, aFirst, aLast, aCompare);
 end;
-{====================================================================}
-
 
 {===Randomized quicksort=============================================}
 procedure QSR(aList    : TList;
@@ -673,7 +865,7 @@ begin
     aFirst := succ(R);
   end;
 end;
-{--------}
+
 procedure TDQuickSortRandom(aList    : TList;
                             aFirst   : integer;
                             aLast    : integer;
@@ -682,8 +874,6 @@ begin
   TDValidateListRange(aList, aFirst, aLast, 'TDQuickSortRandom');
   QSR(aList, aFirst, aLast, aCompare);
 end;
-{====================================================================}
-
 
 {===Median of 3 quicksort============================================}
 procedure QSM(aList    : TList;
@@ -744,7 +934,7 @@ begin
     aFirst := succ(R);
   end;
 end;
-{--------}
+
 procedure TDQuickSortMedian(aList    : TList;
                             aFirst   : integer;
                             aLast    : integer;
@@ -753,8 +943,6 @@ begin
   TDValidateListRange(aList, aFirst, aLast, 'TDQuickSortMedian');
   QSM(aList, aFirst, aLast, aCompare);
 end;
-{====================================================================}
-
 
 {===Optimized quicksort==============================================}
 const
@@ -935,8 +1123,6 @@ begin
   QS(aList, aFirst, aLast, aCompare);
   QSInsertionSort(aList, aFirst, aLast, aCompare);
 end;
-{====================================================================}
-
 
 {===Heapsort=========================================================}
 procedure HSTrickleDown(aList    : PPointerList;
@@ -1018,7 +1204,5 @@ begin
     HSTrickleDown(@aList.List^[aFirst], 0, Inx, aCompare);
   end;
 end;
-{====================================================================}
-
 
 end.

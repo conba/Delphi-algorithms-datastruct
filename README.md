@@ -119,10 +119,282 @@ end;
 * 构造对象
   1. 设置节点大小，通过参数传入，sizeof
   2. 计算每个页面中节点个数，如果节点个数>1，那么设置页面大小为1024字节，如果节点个数<1，则设置节点个数=1，设置页面大小=节点大小+sizeof(pointer)。这样设计是将页面的前4个字节设置为页头，从而保证操作的一致性。
+  
 * 分配节点
   1. 如果空闲列表为空，那么设置空闲列表，然后弹出空闲列表中的第一个节点，否则直接弹出第一个节点。
   2. 如何设置空闲列表，分配一个新的页面（就是获取页面大小的内存，使用PAnsiChar，这样可以直接做指针的加减），将头sizeof(Pointer)字节的内存作为头，然后循环将节点大小（FNodeSize）的内存块添加到空闲列表中。
   
+  
+  
+## 五、排序
+
+* 排序的基础知识
+
+  1. 在所有的以比较来排序的算法中，最快的速度是O(nlog(n))。
+  2. 排序分为稳定排序和非稳定排序
+  3. 逆序表可以测试出许多排序效率底下
+
+* 冒泡排序
+
+  ```pascal
+  // 冒小泡
+  procedure TDBubbleSort(aList    : TList;
+                         aFirst   : integer;
+                         aLast    : integer;
+                         aCompare : TtdCompareFunc);
+  var
+    i, j : integer;
+    Temp : pointer;
+    Done : boolean;
+  begin
+    // 检查输入的值是否正确：例如List为空，first和last是否越界等。
+    TDValidateListRange(aList, aFirst, aLast, 'TDBubbleSort');
+    for i := aFirst to pred(aLast) do
+    begin
+      Done := true;
+      for j := aLast downto succ(i) do
+        if (aCompare(aList.List^[j], aList.List^[j-1]) < 0) then
+        begin
+          {swap jth and (j-1)th elements}
+          Temp := aList.List^[j];
+          aList.List^[j] := aList.List^[j-1];
+          aList.List^[j-1] := Temp;
+          Done := false;
+        end;
+      if Done then
+        Exit;
+    end;
+  end;
+  ```
+
+  1. 冒泡排序是不稳定排序，如果把**小于**改为**小于等于**，那么就变为稳定排序，不过bDone就没有用了。
+  2. 时间复杂度是O(n²)
+
+* 摇动排序
+
+  ```pascal
+  procedure TDShakerSort(aList    : TList;
+                         aFirst   : integer;
+                         aLast    : integer;
+                         aCompare : TtdCompareFunc);
+  var
+    i    : integer;
+    Temp : pointer;
+  begin
+    TDValidateListRange(aList, aFirst, aLast, 'TDShakerSort');
+    while (aFirst < aLast) do begin
+      for i := aLast downto succ(aFirst) do
+        if (aCompare(aList.List^[i], aList.List^[i-1]) < 0) then
+        begin
+          Temp := aList.List^[i];
+          aList.List^[i] := aList.List^[i-1];
+          aList.List^[i-1] := Temp;
+        end;
+      inc(aFirst);
+      for i := succ(aFirst) to aLast do
+        if (aCompare(aList.List^[i], aList.List^[i-1]) < 0) then
+        begin
+          Temp := aList.List^[i];
+          aList.List^[i] := aList.List^[i-1];
+          aList.List^[i-1] := Temp;
+        end;
+      dec(aLast);
+    end;
+  end;
+  ```
+
+  1. 摇动排序是冒泡排序的一种变种，这种算法比冒泡算法的速度稍微有提高。
+  2. 摇动排序是不稳定排序
+
+* 选择排序
+
+  ```pascal
+  procedure TDSelectionSort(aList    : TList;
+                            aFirst   : integer;
+                            aLast    : integer;
+                            aCompare : TtdCompareFunc);
+  var
+    i, j       : integer;
+    IndexOfMin : integer;
+    Temp       : pointer;
+  begin
+    TDValidateListRange(aList, aFirst, aLast, 'TDSelectionSort');
+    for i := aFirst to pred(aLast) do
+    begin
+      IndexOfMin := i;
+      for j := succ(i) to aLast do
+        if (aCompare(aList.List^[j], aList.List^[IndexOfMin]) < 0) then
+          IndexOfMin := j;
+      Temp := aList.List^[i];
+      aList.List^[i] := aList.List^[IndexOfMin];
+      aList.List^[IndexOfMin] := Temp;
+    end;
+  end;
+  ```
+
+  1. 选择排序的第一次要比较n此，第二次比较（n-1）次，总次数等于n(n+1)/2 - 1，即O(n²)。
+  2. 在实际工作中，比较一次的开销比交换两个元素的开销要小的多，所以选择排序速度还可以。
+  3. 选择排序是稳定排序。
+
+* 插入排序
+
+  ```pascal
+  // 未优化的插入排序
+  procedure TDInsertionSortStd(aList    : TList;
+                               aFirst   : integer;
+                               aLast    : integer;
+                               aCompare : TtdCompareFunc);
+  var
+    i, j : integer;
+    Temp : pointer;
+  begin
+    TDValidateListRange(aList, aFirst, aLast, 'TDInsertionSortStd');
+    for i := succ(aFirst) to aLast do
+    begin
+      Temp := aList.List^[i];
+      j := i;
+      while (j > aFirst) and (aCompare(Temp, aList.List^[j-1]) < 0) do
+      begin
+        aList.List^[j] := aList.List^[j-1];
+        dec(j);
+      end;
+      aList.List^[j] := Temp;
+    end;
+  end;
+  
+  // 已优化的插入排序
+  //1. 先使用选择排序找到最小的元素
+  //2. 之后使用插入排序排后面的元素
+  procedure TDInsertionSort(aList    : TList;
+                            aFirst   : integer;
+                            aLast    : integer;
+                            aCompare : TtdCompareFunc);
+  var
+    i, j       : integer;
+    IndexOfMin : integer;
+    Temp       : pointer;
+  begin
+    TDValidateListRange(aList, aFirst, aLast, 'TDInsertionSort');
+    //{find the smallest element and put it in the first position}
+    IndexOfMin := aFirst;
+    for i := succ(aFirst) to aLast do
+      if (aCompare(aList.List^[i], aList.List^[IndexOfMin]) < 0) then
+        IndexOfMin := i;
+    if (aFirst <> IndexOfMin) then
+    begin
+      Temp := aList.List^[aFirst];
+      aList.List^[aFirst] := aList.List^[IndexOfMin];
+      aList.List^[IndexOfMin] := Temp;
+    end;
+    //{now sort via insertion method}
+    for i := aFirst+2 to aLast do
+    begin
+      Temp := aList.List^[i];
+      j := i;
+      while (aCompare(Temp, aList.List^[j-1]) < 0) do
+      begin
+        aList.List^[j] := aList.List^[j-1];
+        dec(j);
+      end;
+      aList.List^[j] := Temp;
+    end;
+  end;
+  ```
+
+  1. 插入排序也是一种O(n²)的排序。
+  2. 如果列表部分有序，那么插入排序是一种非常快的算法。甚至可以是一种O(n)的算法。
+  3. 插入排序是一种稳定的排序算法。
+
+* 希尔排序（Shell Sort）
+
+  ```pascal
+  procedure TDShellSort(aList    : TList;
+                        aFirst   : integer;
+                        aLast    : integer;
+                        aCompare : TtdCompareFunc);
+  var
+    i, j : integer;
+    h    : integer;
+    Temp : pointer;
+    Ninth: integer;
+  begin
+    //{Note: Shellsort was invented by Donald Shell in 1959.
+    //       This Shellsort implementation uses Knuth's sequence: 1, 4,
+    //       13, 40, 121, ...}
+    TDValidateListRange(aList, aFirst, aLast, 'TDShellSort');
+    //{firstly calculate the first h value we shall use: it'll be about
+    // one ninth of the number of the elements}
+    h := 1;
+    Ninth := (aLast - aFirst) div 9;
+    while (h <= Ninth) do
+      h := (h * 3) + 1;
+    //{start a loop that'll decrement h by one third each time through}
+    while (h > 0) do begin
+      {now insertion sort each h-subfile}
+      for i := (aFirst + h) to aLast do
+      begin
+        Temp := aList.List^[i];
+        j := i;
+        while (j >= (aFirst+h)) and
+              (aCompare(Temp, aList.List^[j-h]) < 0) do
+        begin
+          aList.List^[j] := aList.List^[j-h];
+          dec(j, h);
+        end;
+        aList.List^[j] := Temp;
+      end;
+      //{decrease h by a third}
+      h := h div 3;
+    end;
+  end;
+  ```
+
+  1. 希尔排序是基于插入排序的一种排序
+
+* 梳式排序（Comb Sort）
+
+  ```pascal
+  procedure TDCombSort(aList    : TList;
+                       aFirst   : integer;
+                       aLast    : integer;
+                       aCompare : TtdCompareFunc);
+  var
+    i, j : integer;
+    Temp : pointer;
+    Done : boolean;
+    Gap  : integer;
+  begin
+    TDValidateListRange(aList, aFirst, aLast, 'TDCombSort');
+    //{start off with a gap equal to the number of elements}
+    Gap := succ(aLast - aFirst);
+    repeat
+      //{assume we'll finish this time around}
+      Done := true;
+      //{calculate the new gap}
+      Gap := (longint(Gap) * 10) div 13; {Gap := Trunc(Gap / 1.3);}
+      if (Gap < 1) then
+        Gap := 1
+      else if (Gap = 9) or (Gap = 10) then
+        Gap := 11;
+      {order every item with its sibling Gap items along}
+      for i := aFirst to (aLast - Gap) do begin
+        j := i + Gap;
+        if (aCompare(aList.List^[j], aList.List^[i]) < 0) then
+        begin
+          //{swap jth and (j-Gap)th elements}
+          Temp := aList.List^[j];
+          aList.List^[j] := aList.List^[i];
+          aList.List^[i] := Temp;
+          //{we swapped, so we didn't finish}
+          Done := false;
+        end;
+      end;
+    until Done and (Gap = 1);
+  end;
+  ```
+
+  
+
   
 
 
