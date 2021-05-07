@@ -1,0 +1,48 @@
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+		<PropertyGroup>
+			<ProjectGuid>{257F2319-D56F-4E69-A8C4-117F6CF855FC}</ProjectGuid>
+		</PropertyGroup>
+		<ItemGroup>
+			<Projects Include="States\States.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="Regex\Regex.dproj">
+				<Dependencies/>
+			</Projects>
+		</ItemGroup>
+		<ProjectExtensions>
+			<Borland.Personality>Default.Personality.12</Borland.Personality>
+			<Borland.ProjectType/>
+			<BorlandProject>
+				<Default.Personality/>
+			</BorlandProject>
+		</ProjectExtensions>
+		<Target Name="States">
+			<MSBuild Projects="States\States.dproj"/>
+		</Target>
+		<Target Name="States:Clean">
+			<MSBuild Projects="States\States.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="States:Make">
+			<MSBuild Projects="States\States.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="Regex">
+			<MSBuild Projects="Regex\Regex.dproj"/>
+		</Target>
+		<Target Name="Regex:Clean">
+			<MSBuild Projects="Regex\Regex.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="Regex:Make">
+			<MSBuild Projects="Regex\Regex.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="Build">
+			<CallTarget Targets="States;Regex"/>
+		</Target>
+		<Target Name="Clean">
+			<CallTarget Targets="States:Clean;Regex:Clean"/>
+		</Target>
+		<Target Name="Make">
+			<CallTarget Targets="States:Make;Regex:Make"/>
+		</Target>
+		<Import Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')" Project="$(BDS)\Bin\CodeGear.Group.Targets"/>
+	</Project>
